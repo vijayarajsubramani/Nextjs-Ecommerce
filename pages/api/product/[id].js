@@ -1,4 +1,5 @@
-import { approveProductByadmin, getSingleProduct } from '../../../controller/product.controller'
+import { approveProductByadmin, getSingleProduct ,getAllProduct} from '../../../controller/product.controller'
+import {  getAllProductSchema } from '../../../validator/validation';
 import connectDB from '../../../common/mongod'
 import { checkJwtToken } from '../../../common/constants'
 
@@ -12,6 +13,10 @@ export default async (req, res) => {
         }
         case 'PUT': {
             await approveProduct(req, res);
+            break;
+        }
+        case 'POST': {
+            await getAllProductbyseller(req, res);
             break;
         }
     }
@@ -35,6 +40,16 @@ const approveProduct = async (req, res) => {
             const approve = await approveProductByadmin(req.query, req.body);
             return res.status(approve.statusCode).send(approve)
         }
+
+    } catch (error) {
+        return res.status(500).send({ statusCode: 500, status: 'error', message: error.message });
+    }
+}
+const getAllProductbyseller = async (req, res) => {
+    try {
+        await getAllProductSchema.validateAsync(req.body);
+        const getdata = await getAllProduct(req.body,req.query);
+        return res.status(getdata.statusCode).send(getdata)
 
     } catch (error) {
         return res.status(500).send({ statusCode: 500, status: 'error', message: error.message });

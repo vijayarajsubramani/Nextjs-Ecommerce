@@ -58,7 +58,9 @@ module.exports.addProductSchema = joi.object({
     categoryId: joiObjectId().required(),
     images: joi.array(),
     price:joi.number().required(),
-    quantity:joi.number().required()
+    quantity:joi.number().required(),
+    description: joi.string().min(3).max(300).required(),
+
 })
 module.exports.getProductSchemabySeller = joi.object({
     sellerId: joiObjectId().required(),

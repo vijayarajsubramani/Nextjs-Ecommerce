@@ -172,7 +172,8 @@ export const getProductbyAdmin = async (reqbody) => {
     }
 
 }
-export const getAllProduct = async (reqbody) => {
+export const getAllProduct = async (reqbody,query) => {
+    console.log('query',query)
     try {
         let filter_obj = reqbody.filterObj;
         let sort_obj = reqbody.sortObj;
@@ -188,9 +189,9 @@ export const getAllProduct = async (reqbody) => {
         filterArr.push({ productStatus: "APPROVED" });
         filterArr.push({ isProductDeleted: false })
         filterArr.push({ isSellerActive: true })
-        
+
         if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'SELLER_PRODUCT') {
-            filterArr.push({ $and: [{ sellerId: ObjectID(reqbody.sellerId) }] })
+            filterArr.push({ $and: [{ sellerId: ObjectID(reqbody.sellerId) }, { _id: { $ne: ObjectID(query.id) } }] })
         }
         if (filter_obj) {
             if (filter_obj.categoryName) {

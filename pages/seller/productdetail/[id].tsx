@@ -33,8 +33,8 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="mainsection">
                     <ProductDetail product={product} />
-                    <RecentlyViewProduct />
                     <MoreFromSellerProduct sellerId={product?.sellerDetails?._id}/>
+                    <RecentlyViewProduct />
                 </div>
             </div>
         </>

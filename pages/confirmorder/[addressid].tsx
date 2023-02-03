@@ -30,7 +30,7 @@ const OrderConfirmPage = () => {
     }, [state.auth, addId])
     return (
         <>
-            <div className="row d-flex justify-content-between">
+            <div className="d-flex justify-content-between">
                 <div className="mt-4 mb-4 col-1">
                     <button className="btn btn-info" onClick={() => router.back()}>
                         <i className="fas fa-long-arrow-alt-left" aria-hidden="true"></i> Go Back

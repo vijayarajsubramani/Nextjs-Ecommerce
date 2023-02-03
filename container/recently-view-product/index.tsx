@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import ProductTile from '../../component/ProductTile'
 import { showNotification } from '../../component/Toast'
@@ -5,6 +6,8 @@ import request from '../../service/base.service'
 import { removeKey } from '../../utils'
 
 const RecentlyViewProduct = () => {
+    const router = useRouter();
+    const id = router?.query?.id;
     const [searchValue, setsearchvalue] = useState<string>('')
     const [page, setPage] = useState<number>(1)
     const [limit, setLimit] = useState<number>(5)
@@ -19,7 +22,7 @@ const RecentlyViewProduct = () => {
             const removeFalsy: any = await removeKey(filterObj)
             const payload = { page: page, limit: limit, searchValue: searchValue, filterObj: removeFalsy, sortObj: sortObj }
             setLoading(true)
-            await request({ url: '/api/product/allsellerproduct', method: 'post', data: removeKey(payload) }).then((res: any) => {
+            await request({ url: `/api/product/${id}`, method: 'post', data: removeKey(payload) }).then((res: any) => {
                 if (res.status === 'success') {
                     setProduct(res?.data)
                     setOverallpage(Math.ceil((res.totalcount / limit)))
@@ -33,8 +36,8 @@ const RecentlyViewProduct = () => {
         }
     }
     useEffect(() => {
-        getProducts();
-    }, [page, limit, filterObj])
+        id && getProducts();
+    }, [page, limit, filterObj,id])
     return (
         <>
            <h5>Recently View Product</h5> 

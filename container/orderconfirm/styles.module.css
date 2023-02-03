@@ -1,6 +1,11 @@
 .addressCart{
-    width: 75%;
-    max-width: 200px;
+    width: 80%;
     display: flex;
     justify-content: end;
+    letter-spacing: 1px;
+    line-height: 15px;
+}
+
+.boxRadius{
+    border-radius: 25px;
 }

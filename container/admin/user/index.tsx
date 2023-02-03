@@ -49,7 +49,7 @@ const AllUser = () => {
                 {isLoader ? <Loader/> :
                     <div className="w-100">
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-6 mx-5">
                             <input type='text' placeholder="search" value={filterObj.value} onChange={(e: any) => setFilterObj({ ...filterObj, value: e.target.value })}  className={styles.input}/>
                             </div>
                         </div>
