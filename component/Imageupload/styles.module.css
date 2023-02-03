@@ -1,0 +1,12 @@
+.image{
+    background-color: #FAF9F5;
+    width: 70px;
+    height: 70px;
+    padding: 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+}

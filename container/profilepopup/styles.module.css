@@ -1,0 +1,74 @@
+.menuContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    background-color: transparent;
+    z-index: 5;
+    position: fixed;
+    inset: 0;
+}
+
+.popupMenu {
+    background: #ffffff;
+    border-radius: 8px;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 250px;
+    padding: 10px 0;
+    filter: drop-shadow(0px 1px 8px rgb(0 0 0 / 20%));
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s ease;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.popupMenu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 15px;
+    z-index: 1;
+    background: #FFF;
+    width: 15px;
+    transform: translateY(-50%) rotate(45deg);
+    height: 15px;
+}
+
+.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.userName {
+    margin: 0;
+    font-size: 12px;
+    line-height: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    font-size: 16px;
+    font-family: "futura_md";
+}
+
+.ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    padding: 6px 20px;
+    transition: all .25s;
+}
+
+.userInfo.active {
+    background: #ededed;
+}

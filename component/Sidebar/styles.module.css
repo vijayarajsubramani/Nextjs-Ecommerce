@@ -1,0 +1,78 @@
+.sideeMenu {
+    width: 220px;
+    min-height: 87vh;
+    border-right: 1px solid #eaeaea;
+    transition: all 0.25s ease;
+    background-color: rgb(220, 245, 228);
+    height: calc(100vh - 132px);
+    z-index: 1;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: #000000;
+}
+
+.nav>a {
+    text-decoration: none;
+    border-radius: 0px;
+    color: #000000;
+    font-size: 13px !important;
+    font-family: Helvetica_up !important;
+    font-weight: 300 !important;
+    margin-bottom: 0px;
+    padding: 12px 20px 12px 20px;
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    text-transform: capitalize !important;
+    border-left: 5px solid #ffffff;
+}
+
+.nav>a:hover {
+    background-color: #eaeaea;
+    background: #d9d9d9;
+    color: #000;
+    border-left: 5px solid #ffffff;
+}
+
+.nav>a:active {
+    background-color: #eaeaea;
+    background: #d9d9d9;
+    color: #000;
+    border-left: 5px solid #ffffff;
+}
+
+.SideLink {
+    margin-left: 16px !important;
+    vertical-align: text-bottom;
+    font-family: "Helvetica";
+}
+
+.active {
+    background-color: #eaeaea;
+    background: #d9d9d9;
+    color: #000;
+}
+
+.signoutTxt a {
+    margin-left: 40px;
+    font-size: 16px !important;
+    font-family: "Helvetica_B";
+    font-weight: 700 !important;
+    margin-bottom: 0px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.textS {
+    padding-left: 15px;
+}
+
+.dropdown a {
+    color: #000000 !important;
+    text-decoration: none !important;
+    margin-left: 14px !important;
+}

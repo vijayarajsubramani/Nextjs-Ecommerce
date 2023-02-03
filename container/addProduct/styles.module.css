@@ -1,0 +1,26 @@
+.input {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 7px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+  }
+  .registerForm{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .actionbtn{
+    width: 35%;
+    height: 25px;
+    text-align: center;
+    border-radius: 35px;
+    margin: 5px;
+  }
+  .approve{
+    display: flex;
+    justify-content: end;
+  }

@@ -1,0 +1,13 @@
+ .product_description{
+    margin-top: 15%;
+ }
+ .stock{
+   display: flex;
+   align-items: center;
+   padding: 5px 20px;
+   border-radius: 30px;
+   background-color: greenyellow;
+   text-align: center;
+   height: 20px;
+   margin-top: 10px;
+ }
