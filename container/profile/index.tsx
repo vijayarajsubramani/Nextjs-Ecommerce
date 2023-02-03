@@ -2,10 +2,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-
 import Input from "../../component/Input"
 import { DataContext } from "../../context/user";
 import ProfileImage from "./image";
+import styles from './styles.module.css'
+
 
 const mailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -47,22 +48,22 @@ return(
                     </div>
                     <div className="row mt-2">
                         <div className="col-12"><label className="labels">Name</label>
-                        <Input register={register} name="name" type="text" error={errors?.name?.message}  />
+                        <Input register={register} name="name" type="text" error={errors?.name?.message} className={styles.input} />
                         </div>
                     </div>
                     <div className="row mt-3">
                         <div className="col-12"><label className="labels">Mobile Number</label>
-                        <Input  register={register} name="mobile" type="number" error={errors?.mobile?.message}  />
+                        <Input  register={register} name="mobile" type="number" error={errors?.mobile?.message} className={styles.input} />
                         </div>
                     </div>
                     <div className="row mt-3">
                     <div className="col-12"><label className="labels">Email ID</label>
-                        <Input  register={register} name="email" type="text" error={errors?.email?.message}  />
+                        <Input  register={register} name="email" type="text" error={errors?.email?.message}  className={styles.input}/>
                         </div>
                     </div>
                     <div className="mt-5 text-center">
                         <form onSubmit={handleSubmit(onsubmitHandler)}>
-                        <button className="btn btn-primary profile-button" type="submit" >Save Profile</button>
+                        <button className="btn btn-primary profile-button" type="submit" disabled>Save Profile</button>
                         </form>
                     </div>
                 </div>
