@@ -20,7 +20,6 @@ const Sidebar = () => {
     ]
     const sellerMenu = [
         { name: "Product", url: "/seller/productlist", disabled: false },
-        { name: "Order", url: "/seller/order", disabled: false },
         { name: "Address", url: "/seller/address", disabled: false },
     ]
 

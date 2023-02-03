@@ -33,6 +33,8 @@ const AddressCard = () => {
                         setLoading(false)
                         setAddress(res.data)
                     }
+                }).catch((err:any)=>{
+                    setLoading(false)
                 })
             }
         } catch (error: any) {

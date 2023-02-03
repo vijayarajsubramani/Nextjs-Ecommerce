@@ -36,6 +36,7 @@ export default function BasicMenu() {
             </Button>
             <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button', }}>
                 <MenuItem onClick={loginMenu}>Menu</MenuItem>
+                <MenuItem onClick={()=>router.push('/profile')}>Profile</MenuItem>
                 <MenuItem onClick={handlelogout}>Logout</MenuItem>
             </Menu>
         </div>
