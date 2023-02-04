@@ -4,14 +4,15 @@ import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../context/user";
 import styles from './styles.module.css'
 import DoneIcon from "@mui/icons-material/Done";
-import { addTocart, decrease, increase } from "../../context/user/action";
+import { addTocart, addToFav, decrease, increase, removeToFav } from "../../context/user/action";
 import { useRouter } from "next/router";
 import { IconButton } from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 interface Tprops {
-    product?: any
+    product?: any,
+    reload?: any
 }
-const ProductDetail: React.FC<Tprops> = ({ product }) => {
+const ProductDetail: React.FC<Tprops> = ({ product, reload }) => {
     const router = useRouter();
     const id = router.query.id
     const { state, dispatch } = useContext(DataContext)
@@ -32,8 +33,8 @@ const ProductDetail: React.FC<Tprops> = ({ product }) => {
                 <div className="row m-4">
                     <div className="col-5" style={{ cursor: 'pointer' }}>
                         <div className='d-flex justify-content-end' >
-                            <IconButton aria-label="add to favorites">
-                            <FavoriteIcon style={{color: product?.fav ? 'red':''}}/>
+                            <IconButton aria-label="add to favorites" onClick={() => product?.favoritesCount === 0 ? addToFav(product, state?.auth?.user?._id, reload) : removeToFav(product, state?.auth?.user?._id, reload)}>
+                                <FavoriteIcon style={{ color: product?.favoritesCount === 1 ? 'red' : '' }} />
                             </IconButton>
                         </div>
                         <div className="row">

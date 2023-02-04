@@ -2,7 +2,10 @@ import connectDB from '../common/mongod';
 import User from '../model/user'
 const ObjectID = require('mongodb').ObjectId;
 import Product from '../model/product';
+import RecentlyView from '../model/recentlyview'
+import UserActivity from '../model/userActivity';
 import Category from '../model/category'
+import Favorite from '../model/favorite';
 connectDB();
 
 
@@ -172,8 +175,33 @@ export const getProductbyAdmin = async (reqbody) => {
     }
 
 }
-export const getAllProduct = async (reqbody,query) => {
-    console.log('query',query)
+const userActivityRecently = async (details, activityTypes, types) => {
+    try {
+        const activity = {
+            userId: details.sellerId,
+            activityTypes: activityTypes,
+            sellerId: details.sellerId,
+            typeId: details.typeId
+        }
+        if (types === 'PRODUCT') {
+            let productDetail = {
+                buyerId: details.sellerId,
+                productId: details.typeId,
+                productSellerId: details.sellerId
+            }
+            let viewProduct = new RecentlyView(productDetail);
+            await viewProduct.save();
+            if (details.userId) {
+                let user = new UserActivity(activity)
+                await user.save()
+            }
+        }
+    }
+    catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+}
+export const getAllProduct = async (reqbody, query) => {
     try {
         let filter_obj = reqbody.filterObj;
         let sort_obj = reqbody.sortObj;
@@ -193,6 +221,23 @@ export const getAllProduct = async (reqbody,query) => {
         if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'SELLER_PRODUCT') {
             filterArr.push({ $and: [{ sellerId: ObjectID(reqbody.sellerId) }, { _id: { $ne: ObjectID(query.id) } }] })
         }
+        if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'RECENTLY1') {
+            if (!reqbody.sellerId) {
+                return { statusCode: 400, status: 'error', message: 'Provide a buyerId' }
+            }
+            let prodArrayIds;
+            if (primaryFilterObj?.primaryFilterName === 'RECENTLY') {
+                prodArrayIds = await RecentlyView.distinct('productId', { buyerId: reqbody.sellerId })
+            } else {
+                return { statusCode: 400, status: 'error', message: 'Provide a valid primaryFilterName' }
+            }
+            if (!prodArrayIds || !prodArrayIds.length) {
+                return { statusCode: 200, status: 'success', message: 'Product fetched Successfully', data: [] }
+            }
+            const prodIdArray = prodArrayIds.map((x) => { return ObjectID(x) })
+            console.log('prodIdArray', prodIdArray)
+            // filterArr.push({ '_id': { $in: prodIdArray } })
+        }
         if (filter_obj) {
             if (filter_obj.categoryName) {
                 filterArr.push({ $or: [{ 'categoryname': filter_obj.categoryName }] })
@@ -204,7 +249,6 @@ export const getAllProduct = async (reqbody,query) => {
                 filterArr.push({ 'price': { $lte: parseInt(filter_obj.maxPrice) } })
             }
         }
-        console.log('sort_obj', reqbody.sortObj)
         if (sort_obj) {
             if (sort_obj === 'createdAt-DESC') {
                 sortObjFinlal = { 'createdAt': -1, _id: 1 }
@@ -216,12 +260,24 @@ export const getAllProduct = async (reqbody,query) => {
         if (reqbody.searchValue) {
             searchArr.push({ productname: { $regex: reqbody.searchValue, $options: 'i' } }, { categoryname: { $regex: reqbody.searchValue, $options: 'i' } })
         }
+        let filterArray = ['RECENTLY']
         aggregationPipeline.push({ $match: { $and: filterArr } })
         aggregationPipeline.push({ $sort: sortObjFinlal })
         searchArr.length && aggregationPipeline.push({ $match: { $or: searchArr } })
         let totalProductCount = 0;
         totalProductCount = await Product.aggregate(aggregationPipeline);
         const products = await Product.aggregate(aggregationPipeline).skip(skip).limit(limit);
+        if (reqbody.sellerId) {
+            if (!filterArray.includes(primaryFilterObj?.primaryFilterName)) {
+                products.map(async (x) => {
+                    const productDetails = {
+                        typeId: String(x._id),
+                        sellerId: x.sellerId
+                    }
+                    await userActivityRecently(productDetails, 'VISIT', 'PRODUCT')
+                })
+            }
+        }
         return { statusCode: 200, status: 'success', message: 'Successfully getall data', data: products || [], totalcount: totalProductCount.length || 0 }
 
 
@@ -349,6 +405,55 @@ export const updateProductSeller_Admin = async (reqbody, result) => {
 
     }
     catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+}
+export const addToFavProduct = async (reqbody) => {
+    try {
+        const favorite = await Favorite.findOne({ buyerId: reqbody.buyerId, productId: reqbody.productId });
+        if (favorite) {
+            return { statusCode: 400, status: 'error', message: 'Product already added into favorites' }
+        }
+        let addToFav = new Favorite(reqbody);
+        await addToFav.save();
+        const product = await Product.findOne({ _id: ObjectID(reqbody.productId) })
+        if (product) {
+            const favCount = product?.favoritesCount ? product?.favoritesCount + 1 : 1;
+            await Product.updateOne({ _id: ObjectID(reqbody.productId) }, { favoritesCount: favCount })
+            const activity = {
+                userId: reqbody.buyerId,
+                activityType: 'FAVORITE',
+                typeId: reqbody.productId,
+                sellerId: product?.sellerId
+            }
+            let userAct = UserActivity(activity);
+            await userAct.save()
+            return { statusCode: 200, status: 'success', message: 'Product successfully added into favorites ' }
+
+        }
+    } catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+
+    }
+}
+export const removeFavProduct = async (reqbody) => {
+    try {
+        const favorite = await Favorite.findOne({ buyerId: reqbody.buyerId, productId: reqbody.productId });
+        if (!favorite) {
+            return { statusCode: 400, status: 'error', message: 'Product not found in favorite' }
+        }
+        await Favorite.deleteOne({ buyerId: reqbody.buyerId, productId: reqbody.productId })
+        await UserActivity.deleteOne({ userId: reqbody.userId, typeId: reqbody.productId });
+        const product = await Product.findOne({ _id: ObjectID(reqbody.productId) })
+        if (product) {
+            const favCount = product?.favoritesCount ? +(product?.favoritesCount) - 1 : 0;
+            await Product.updateOne({ _id: ObjectID(reqbody.productId) }, { favoritesCount: favCount })
+        }
+
+        return { statusCode: 200, status: 'success', message: 'Product successfully removed from favorites ' }
+
+
+    } catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }

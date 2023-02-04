@@ -4,6 +4,7 @@ import PaymentProgress from "../../component/Paymentprogress"
 import { showNotification } from "../../component/Toast"
 import { OrderConfirm } from "../../container/orderconfirm"
 import { DataContext } from "../../context/user"
+import HeaderRoute from "../../routes/HeaderRoutes"
 import SellerAuth from "../../routes/privateRoutes/seller"
 import request from "../../service/base.service"
 
@@ -49,4 +50,4 @@ const OrderConfirmPage = () => {
         </>
     )
 }
-export default SellerAuth(OrderConfirmPage)
+export default HeaderRoute(OrderConfirmPage)

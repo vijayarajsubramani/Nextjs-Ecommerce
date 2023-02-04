@@ -24,12 +24,24 @@ const productSchema = new mongoose.Schema({
     productStatus: {
         type: String,
         default: "PENDING",
-      },
+    },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
     },
     sellerId: {
         type: mongoose.Schema.Types.ObjectId,
+    },
+    favoritesCount: {
+        type: Number,
+        default: 0
+    },
+    viewsCount: {
+        type: Number,
+        default: 0
+    },
+    salesCount: {
+        type: Number,
+        default: 0
     },
     isProductDeleted: {
         type: Boolean,

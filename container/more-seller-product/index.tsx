@@ -8,10 +8,9 @@ import { removeKey } from '../../utils'
 const MoreFromSellerProduct = ({sellerId}) => {
     const router = useRouter();
     const id = router?.query?.id;
-
     const [searchValue, setsearchvalue] = useState<string>('')
     const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(4)
     const [primaryFilterObj,setPrimaryFilterObj]=useState({primaryFilterName:'SELLER_PRODUCT'})
     const [filterObj, setFilterObj] = useState({ productname: '', categoryName: '', productStatus: '', sellerName: '', minPrice: '', maxPrice: '' })
     const [sortObj, setSortObj] = useState('createdAt-DESC')
@@ -39,11 +38,11 @@ const MoreFromSellerProduct = ({sellerId}) => {
     }
     useEffect(() => {
         id && getProducts();
-    }, [page, limit, filterObj,sellerId])
+    }, [page, limit, filterObj,sellerId,id])
     return (
         <> 
 
-          {product.length>0 && <><h5>More from this Seller</h5> <ProductTile productImage={product}/> </>}
+          {product.length>0 && <><h5></h5> <ProductTile productImage={product} label='More from this Seller'/> </>}
          </>
     )
 }

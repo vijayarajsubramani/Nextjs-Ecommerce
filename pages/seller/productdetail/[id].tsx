@@ -5,7 +5,7 @@ import MoreFromSellerProduct from "../../../container/more-seller-product"
 import ProductDetail from "../../../container/productDetail"
 import RecentlyViewProduct from "../../../container/recently-view-product"
 import { DataContext } from "../../../context/user"
-import SellerAuth from "../../../routes/privateRoutes/seller"
+import HeaderRoute from "../../../routes/HeaderRoutes"
 import request from "../../../service/base.service"
 
 const ProductDetailPage = () => {
@@ -32,12 +32,16 @@ const ProductDetailPage = () => {
                     </button>
                 </div>
                 <div className="mainsection">
-                    <ProductDetail product={product} />
-                    <MoreFromSellerProduct sellerId={product?.sellerDetails?._id}/>
-                    <RecentlyViewProduct />
+                    <ProductDetail product={product}  reload={getProductbyId}/>
+                    <div className="my-5">
+                        <MoreFromSellerProduct sellerId={product?.sellerDetails?._id} />
+                    </div>
+                    <div className="my-5">
+                        {state?.auth?.user && <RecentlyViewProduct />}
+                    </div>
                 </div>
             </div>
         </>
     )
 }
-export default SellerAuth(ProductDetailPage)
+export default HeaderRoute(ProductDetailPage)

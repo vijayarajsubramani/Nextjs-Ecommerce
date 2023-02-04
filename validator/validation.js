@@ -212,4 +212,16 @@ module.exports.deleteAddressSchema=joi.object({
     addressId: joiObjectId().required(),
 
 })
+//favorite
+module.exports.addtoFovoriteSchema=joi.object({
+    sellerId: joiObjectId().required(),
+    favoriteType: joi.string().valid('PRODUCT').required(),
+    productId:joi.when('favoriteType',{
+        is:joi.string().valid('PRODUCT'),
+        then:joiObjectId().required(),
+        otherwise:joi.valid(null)
+    }),
+    isFovrite:joi.boolean().required()
+
+})
 

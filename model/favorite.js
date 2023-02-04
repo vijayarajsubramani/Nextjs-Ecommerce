@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const recentlySchema = mongoose.Schema(
+const favoriteSchema = mongoose.Schema(
     {
         buyerId: {
             type: String,
@@ -8,7 +8,7 @@ const recentlySchema = mongoose.Schema(
         productId: {
             type: String,
         },
-        productSellerId:{
+        favoriteType: {
             type: String,
         },
     },
@@ -16,5 +16,5 @@ const recentlySchema = mongoose.Schema(
         timestamps: true,
     }
 );
-const RecentlyView = mongoose.models.RecentlyView || mongoose.model('RecentlyView', recentlySchema)
-export default RecentlyView
+let Favorite = mongoose.models.Favorite || mongoose.model('Favorite', favoriteSchema)
+module.exports = Favorite;

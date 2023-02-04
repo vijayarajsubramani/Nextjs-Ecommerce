@@ -51,3 +51,14 @@ export const increase = async (data: any, user: any, dispatch: any, inc: string)
 export const decrease = async (data: any, user: any, dispatch: any, dec: string) => {
     await addTocart(data, user, dispatch, dec)
 }
+export const addToFav=async(data:any,id:string,reload:any)=>{
+    const payload={sellerId:id,favoriteType:'PRODUCT',productId:data._id,isFovrite:true }
+    await request({url:'/api/favorite/favorite',method:'post',data:payload}).then((res:any)=>{
+        if(reload)reload()
+        showNotification(true, res?.message)
+    })
+}
+export const removeToFav=async(data:any,id:string,reload:any)=>{
+    const payload={ sellerId:id, favoriteType:'PRODUCT', productId:data._id, isFovrite:false}
+    await request({url:'/api/favorite/favorite',method:'put',data:payload}).then((res:any)=>{if(reload)reload()})
+}

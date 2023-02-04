@@ -7,7 +7,7 @@ const ProfilePage = () => {
     <>
       <div className="sideeMenu">
         <Sidebar />
-        <div>
+        <div style={{width: '100%'}} className="d-flex justify-content-center">
             <Profile/>
         </div>
       </div>

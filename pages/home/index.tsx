@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import Loader from '../../component/Loader';
+import ProductFilter from '../../component/ProductFilter';
 import ProductTile from '../../component/ProductTile';
 import { showNotification } from '../../component/Toast';
-import GuestAuth from '../../routes/publicRoutes';
+import HeaderRoute from '../../routes/HeaderRoutes';
 import request from '../../service/base.service';
 import { removeKey } from '../../utils';
 
@@ -36,13 +37,14 @@ const HomePage = () => {
     }
     useEffect(() => {
         getProducts();
-    }, [page, limit, filterObj])
+    }, [page, limit, filterObj,searchValue,sortObj])
 
     return (
         <>
-            {loading ? <Loader/> :<ProductTile productImage={product} />}
+            <ProductFilter setsearchvalue={setsearchvalue} setSortObj={setSortObj} setFilterObj={setFilterObj}/>
+            {loading ? <Loader/> :<ProductTile productImage={product} reload={getProducts}/>}
         </>
     )
 }
-export default GuestAuth(HomePage);
+export default HeaderRoute(HomePage);
 

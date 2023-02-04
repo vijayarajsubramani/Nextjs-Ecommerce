@@ -17,10 +17,10 @@ const ProductTile = ({ productImage }) => {
                     <Card className='col-2 my-2' sx={{ width: 300, height: 250 }}>
                         <div className='d-flex justify-content-end'>
                             <IconButton aria-label="add to favorites">
-                                {router.pathname !=='/confirmorder/[addressid]' && <FavoriteIcon style={{ color: item?.fav ? 'red' : '' }} />}
+                                {router.pathname !== '/confirmorder/[addressid]' && <FavoriteIcon style={{ color: item?.fav ? 'red' : '' }} />}
                             </IconButton>
                         </div>
-                        <div className='border d-flex justify-content-center' onClick={() => router.push(`/seller/productdetail/${router.pathname ==='/confirmorder/[addressid]'? item?.productDetails?._id : item._id}`)}>
+                        <div className='border d-flex justify-content-center' onClick={() => router.push(`/seller/productdetail/${router.pathname === '/confirmorder/[addressid]' ? item?.productDetails?._id : item._id}`)}>
                             <Image src={(item?.images?.[0] ?? item?.productImage[0]) ?? dummy} alt='imgae upload' width='150' height='150' loading="lazy" />
                         </div>
                         <CardContent>
