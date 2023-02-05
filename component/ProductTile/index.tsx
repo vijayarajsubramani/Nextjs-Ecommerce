@@ -40,9 +40,9 @@ const ProductTitle: React.FC<Tprops> = ({ productImage, label ,reload}) => {
                                     <div >
                                         <span>₹ {item.price || ''}</span>
                                     </div>
-                                    <IconButton aria-label="add to favorites" onClick={() => item?.favoritesCount === 0 ? addToFav(item, state?.auth?.user?._id, reload) : removeToFav(item, state?.auth?.user?._id, reload)}>
+                                    {state?.auth?.user && <IconButton aria-label="add to favorites" onClick={() => item?.favoritesCount === 0 ? addToFav(item, state?.auth?.user?._id, reload) : removeToFav(item, state?.auth?.user?._id, reload)}>
                                         {router.pathname !== '/confirmorder/[addressid]' &&<FavoriteIcon style={{ color: item?.favoritesCount === 1 ? 'red' : '' }} />}
-                                    </IconButton>
+                                    </IconButton>}
                                 </div>
                             </CardContent>
                         </div>

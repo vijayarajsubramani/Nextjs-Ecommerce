@@ -44,7 +44,7 @@ const RecentlyViewProduct = () => {
     return (
         <>
             <div>
-                <ProductTile productImage={product} label='Recently View Product'/>
+                <ProductTile productImage={product} label='Recently View Product' reload={getProducts}/>
             </div>
         </>
     )

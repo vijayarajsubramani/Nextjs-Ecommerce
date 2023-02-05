@@ -84,7 +84,7 @@ export const getAllcart = async (reqbody) => {
         }
         ]);
         await Promise.all(cartDetails.map(async (cart) => {
-            if (!(cart.productDetails.isSellerActive === true)) {
+            if (!(cart.productDetails?.isSellerActive === true)) {
                 await Cart.deleteOne({ _id: cart._id })
             }
         }))

@@ -33,9 +33,9 @@ const ProductDetail: React.FC<Tprops> = ({ product, reload }) => {
                 <div className="row m-4">
                     <div className="col-5" style={{ cursor: 'pointer' }}>
                         <div className='d-flex justify-content-end' >
-                            <IconButton aria-label="add to favorites" onClick={() => product?.favoritesCount === 0 ? addToFav(product, state?.auth?.user?._id, reload) : removeToFav(product, state?.auth?.user?._id, reload)}>
+                           {state?.auth?.user && <IconButton aria-label="add to favorites" onClick={() => product?.favoritesCount === 0 ? addToFav(product, state?.auth?.user?._id, reload) : removeToFav(product, state?.auth?.user?._id, reload)}>
                                 <FavoriteIcon style={{ color: product?.favoritesCount === 1 ? 'red' : '' }} />
-                            </IconButton>
+                            </IconButton>}
                         </div>
                         <div className="row">
                             <Image src={toggleImage ?? images?.[0]} alt='imgae upload' width='500' height='300' loading="lazy" onClick={() => changeImage(images?.[0])} />
