@@ -1,9 +1,11 @@
-const RegisterRole = ({register,errors}) => {
+const RegisterRole = ({ register, errors }) => {
     return (
         <>
-            <input {...register('role')} type="radio" value="SELLER" />Seller
-            <input {...register('role')} type="radio" value="ADMIN" />Admin
-            <input {...register('role')} type="radio" value="OTHER" />Other
+            <div >
+                <input {...register('role')} type="radio" value="SELLER" className="m-2"/>Seller
+                <input {...register('role')} type="radio" value="OTHER" className="m-2" />Buyer
+                <input {...register('role')} type="radio" value="ADMIN" disabled className="m-2"/>Admin
+            </div>
             {errors && <p className="error">{errors}</p>}
 
         </>
