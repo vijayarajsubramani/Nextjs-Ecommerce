@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import Cookie from 'js-cookie'
 
 
 const request = async (optional:AxiosRequestConfig, token?: undefined) => {
