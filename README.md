@@ -11,4 +11,5 @@
 11.Delivery Address Page
 12.Order Confirm Page
 13.Profile page
+14.Product Favorite
 14.Logout   
