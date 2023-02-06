@@ -16,14 +16,12 @@ const Header = () => {
             <header className={`${styles.header} container-fluid`}>
                 <div className="row">
                     <div className="col">
-                        <h3 className="py-2" onClick={() => router.push('/')}>CLARITAZ</h3>
+                        <h3 className="py-2" onClick={() => router.push('/')}>SVR</h3>
                     </div>
                     <div className="col d-flex flex-row-reverse" >
                         {!state?.auth?.user?.role ? <div className="p-2"><LoginIcon onClick={() => router.push('/login')} /></div> :
                             <div className="d-flex p-2">
-                                   {state?.auth?.user?.role?.includes('SELLER') && <IconButton aria-label="add to favorites" >
-                                     <FavoriteIcon style={{ color:'red'}}/>
-                                    </IconButton>}
+                                {state?.auth?.user?.role?.includes('SELLER') && <IconButton aria-label="add to favorites" onClick={() => router.push('/seller/favorite')} ><FavoriteIcon style={{color:router.pathname === '/seller/favorite' ? 'red':''}}/></IconButton>}
                                 {state?.auth?.user?.role.includes('SELLER') && <CartIcon />}
                                 <div className="m-1">
                                     <BasicMenu />
@@ -33,7 +31,6 @@ const Header = () => {
                 </div>
             </header>
         </>
-
     )
 }
 export default Header

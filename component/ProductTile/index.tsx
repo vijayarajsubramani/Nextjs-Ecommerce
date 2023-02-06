@@ -24,10 +24,12 @@ const ProductTitle: React.FC<Tprops> = ({ productImage, label ,reload}) => {
             <h5>{label}</h5>
             <div style={{ width: '99%', height: '200px' }} className='d-flex m-2 row'>
                 {productImage?.map((item, index) => (
-                    <Card sx={{ width: 300, heigth: 300 }} className='m-2 ' >
+                    <Card sx={{ width: 300, heigth: 300 }} className='m-2 ' key={index}>
                         <div key={index} style={{ cursor: 'pointer' }}>
                             <div className='d-flex justify-content-end'>
-
+                            {state?.auth?.user && <IconButton aria-label="add to favorites" onClick={() => item?.favoritesCount === 0 ? addToFav(item, state?.auth?.user?._id, reload) : removeToFav(item, state?.auth?.user?._id, reload)}>
+                                        {router.pathname !== '/confirmorder/[addressid]' &&<FavoriteIcon style={{ color: item?.favoritesCount === 1 ? 'red' : '' }} />}
+                                    </IconButton>}
                             </div>
                             <CardContent >
                                 <div className='row border d-flex justify-content-center' onClick={() => router.push(`/seller/productdetail/${router.pathname === '/confirmorder/[addressid]' ? item?.productDetails?._id : item._id}`)}>
@@ -40,9 +42,6 @@ const ProductTitle: React.FC<Tprops> = ({ productImage, label ,reload}) => {
                                     <div >
                                         <span>₹ {item.price || ''}</span>
                                     </div>
-                                    {state?.auth?.user && <IconButton aria-label="add to favorites" onClick={() => item?.favoritesCount === 0 ? addToFav(item, state?.auth?.user?._id, reload) : removeToFav(item, state?.auth?.user?._id, reload)}>
-                                        {router.pathname !== '/confirmorder/[addressid]' &&<FavoriteIcon style={{ color: item?.favoritesCount === 1 ? 'red' : '' }} />}
-                                    </IconButton>}
                                 </div>
                             </CardContent>
                         </div>

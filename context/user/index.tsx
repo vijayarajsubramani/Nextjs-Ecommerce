@@ -15,7 +15,7 @@ export const DataProvider = ({ children }) => {
     const getaddTocart = async () => {
         await request({ url: '/api/cart/cart', method: 'patch', data: { buyerId: state?.auth?.user?._id, } }).then((res: any) => {
             if (res.status === 'success') {
-                dispatch({ type: 'ADD_CART', payload: { count: res?.cart?.cartCount, cartdata: res?.cart?.data } })
+                dispatch({ type: 'ADD_CART', payload: { count: res?.cart?.cartCount, cartdata: res?.cart?.data, payment: res?.cart?.payment } })
             }
         })
     }
@@ -32,10 +32,10 @@ export const DataProvider = ({ children }) => {
 
     useEffect(() => {
         if (state.auth?.user?._id) getaddTocart()
-    }, [state.auth])
+    }, [state?.auth])
 
     return (
-        <DataContext.Provider value={{ state, dispatch}}>
+        <DataContext.Provider value={{ state, dispatch }}>
             {children}
         </DataContext.Provider>
     )

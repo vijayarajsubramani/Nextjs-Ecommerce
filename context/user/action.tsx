@@ -34,7 +34,7 @@ export const addTocart = async (data: any, user: any, dispatch: any, incdec: str
 const getAlladdTocart = async (user: any, dispatch: any) => {
     await request({ url: '/api/cart/cart', method: 'patch', data: { buyerId: user?.user?._id, } }).then((res: any) => {
         if (res.status === 'success') {
-            dispatch({ type: 'ADD_CART', payload: { count: res?.cart?.cartCount, cartdata: res?.cart?.data } })
+            dispatch({ type: 'ADD_CART', payload: { count: res?.cart?.cartCount, cartdata: res?.cart?.data,payment: res?.cart?.payment } })
         }
     })
 }

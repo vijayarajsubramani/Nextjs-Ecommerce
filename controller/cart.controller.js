@@ -55,7 +55,7 @@ export const getAllcart = async (reqbody) => {
                 from: 'products',
                 localField: 'productObjId', foreignField: '_id',
                 pipeline: [{ $match: { $and: [{ isProductDeleted: false }] } }, {
-                    $project: { productname: 1, images: 1, quantity: 1, productStatus: 1, isSellerActive: 1 }
+                    $project: { productname: 1, images: 1, quantity: 1, productStatus: 1, isSellerActive: 1, price: 1 }
                 }],
                 as: 'productDetails'
             }
@@ -88,19 +88,32 @@ export const getAllcart = async (reqbody) => {
                 await Cart.deleteOne({ _id: cart._id })
             }
         }))
-        return { statusCode: 200, status: 'success', message: 'Successfully fetched cart ', cart: { data: cartDetails || [], cartCount: cartDetails.length } }
+        if (cartDetails.length === 0) {
+            return { statusCode: 200, status: 'success', message: 'Cart is Empty', data: { cartCount: 0 } }
+        }
+        let totalDeliveryPrice = 0;
+        let subTotal = 0;
+        let totalamount = 0;
+
+        await Promise.all(cartDetails.map((item, index) => {
+            subTotal += item?.productDetails?.price * cartDetails[index]?.quantity
+            totalDeliveryPrice = subTotal > 500 ? 0 : 40
+            totalamount = subTotal + totalDeliveryPrice
+        }))
+
+        return { statusCode: 200, status: 'success', message: 'Successfully fetched cart ', cart: { data: cartDetails || [], cartCount: cartDetails.length, payment: { subTotal: subTotal, delivery: totalDeliveryPrice, totalamount: totalamount } }, }
 
     } catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }
-export const deleteCart=async(reqbody)=>{
-    try{
-        const cart=await Cart.findOneAndDelete({_id:ObjectID(reqbody.cartId)})
-        if(!cart){
+export const deleteCart = async (reqbody) => {
+    try {
+        const cart = await Cart.findOneAndDelete({ _id: ObjectID(reqbody.cartId) })
+        if (!cart) {
             return { statusCode: 400, status: 'error', message: 'Cart No found' }
         }
-        return { statusCode: 200, status: 'success', message: 'Successfully deleted cart '}
+        return { statusCode: 200, status: 'success', message: 'Successfully deleted cart ' }
     }
     catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };

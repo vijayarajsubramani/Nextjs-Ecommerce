@@ -1,4 +1,3 @@
-import Sidebar from "../../component/Sidebar"
 import SellerAuth from "../../routes/privateRoutes/seller"
 import Cart from "../../container/cart";
 import { useContext, useEffect, useState } from "react";
@@ -26,7 +25,6 @@ const CartPage = () => {
     return (
         <>
             <div className="sideeMenu">
-                <Sidebar />
                 <div className="mainsection">
                     <div className="mt-4 mb-4">
                         <button className="btn btn-info" onClick={() => router.back()}>

@@ -1,15 +1,24 @@
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Loader from '../../component/Loader';
 import ProductTile from '../../component/ProductTile';
 import { DataContext } from '../../context/user'
+import request from '../../service/base.service';
 import styles from './styles.module.css'
 
 
 export const OrderConfirm = ({ address }) => {
     const router = useRouter();
     const { state } = useContext(DataContext)
-    const { city, district, name, pincode, mobile } = address ?? {}
+    const [paymentMethod, setPaymentMethod] = useState<string>( state?.cart?.payment?.totalamount>25000 ? "ONLINEPAYMENT":"COD")
+
+    const { city, district, name, pincode, mobile } = address ?? {};
+
+    const verifyOrder=()=>{
+        const payload={sellerId:state?.auth?.user?._id,addressId:address?._id}
+        request({url:'/api/order/order',method:'post',data:payload}).then((res:any)=>{
+        })
+    }
     return (
         <div>
             {address ? <>
@@ -30,21 +39,17 @@ export const OrderConfirm = ({ address }) => {
                     <div className={`${styles.boxRadius} col-4 border p-1 shadow-sm`}>
                         <h4 className='text-info'>Order Summary</h4>
                         <div>
-                            <p>Item total : ₹ 11196</p>
+                            <p>Item ({state?.cart?.count}) total : ₹ {state?.cart?.payment?.totalamount}</p>
                         </div>
                         <div className='m-1'>
-                            <input type='checkbox' />
-                            <span className='mx-2'>Apply coupon code</span>
-                        </div>
-                        <div className='m-1'>
-                            <input type='radio' />
+                            <input type='radio' value="COD" checked={paymentMethod==='COD'}  onChange={(e:any)=>setPaymentMethod(e.target.value)}/>
                             <span className='mx-2'>Cash on Delivery</span>
                         </div>
                         <div className='m-1'>
-                            <input type='radio' />
+                            <input type='radio' value="ONLINEPAYMENT" checked={paymentMethod==='ONLINEPAYMENT'} onChange={(e:any)=>setPaymentMethod(e.target.value)}/>
                             <span className='mx-2'> Online Payment</span>
                         </div>
-                        <button className='my-3 btn btn-warning rounded-pill'>Submit your order to Pay</button>
+                        <button className='my-3 btn btn-warning rounded-pill' onClick={()=>verifyOrder()}>Submit your order to Pay</button>
                     </div>
                 </div>
                 <hr />

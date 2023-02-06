@@ -1,6 +1,7 @@
 const joi = require('joi');
 const joiObjectId = require('joi-objectid')(joi)
 
+//register
 module.exports.registerSchema = joi.object({
     name: joi.string().min(3).max(30).required(),
     email: joi.string().max(75),
@@ -37,6 +38,7 @@ module.exports.loginSchema = joi.object({
 module.exports.signOutSchema = joi.object({
     token: joi.string().required()
 });
+//category
 module.exports.getCategorySchema = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
@@ -224,4 +226,10 @@ module.exports.addtoFovoriteSchema=joi.object({
     isFovrite:joi.boolean().required()
 
 })
+//order
+module.exports.orderVerifySchema=joi.object({
+    sellerId: joiObjectId().required(),
+    addressId: joiObjectId().required(),
+})
+
 

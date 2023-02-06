@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const favoriteSchema = mongoose.Schema(
     {
-        buyerId: {
+        sellerId: {
             type: String,
         },
         productId: {
@@ -16,5 +16,5 @@ const favoriteSchema = mongoose.Schema(
         timestamps: true,
     }
 );
-let Favorite = mongoose.models.Favorite || mongoose.model('Favorite', favoriteSchema)
-module.exports = Favorite;
+let FavoriteProduct = mongoose.models.FavoriteProduct || mongoose.model('FavoriteProduct', favoriteSchema)
+module.exports = FavoriteProduct;

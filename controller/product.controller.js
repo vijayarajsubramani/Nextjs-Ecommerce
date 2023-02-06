@@ -5,7 +5,7 @@ import Product from '../model/product';
 import RecentlyView from '../model/recentlyview'
 import UserActivity from '../model/userActivity';
 import Category from '../model/category'
-import Favorite from '../model/favorite';
+import FavoriteProduct from '../model/favorite';
 connectDB();
 
 
@@ -221,7 +221,7 @@ export const getAllProduct = async (reqbody, query) => {
         if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'SELLER_PRODUCT') {
             filterArr.push({ $and: [{ sellerId: ObjectID(reqbody.sellerId) }, { _id: { $ne: ObjectID(query.id) } }] })
         }
-        if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'RECENTLY1') {
+        if (primaryFilterObj && primaryFilterObj?.primaryFilterName === 'RECENT') {
             if (!reqbody.sellerId) {
                 return { statusCode: 400, status: 'error', message: 'Provide a buyerId' }
             }
@@ -235,8 +235,15 @@ export const getAllProduct = async (reqbody, query) => {
                 return { statusCode: 200, status: 'success', message: 'Product fetched Successfully', data: [] }
             }
             const prodIdArray = prodArrayIds.map((x) => { return ObjectID(x) })
-            console.log('prodIdArray', prodIdArray)
-            // filterArr.push({ '_id': { $in: prodIdArray } })
+            filterArr.push({ '_id': { $in: prodIdArray } })
+        }
+        if (primaryFilterObj && primaryFilterObj.primaryFilterName === 'FAVORITE') {
+            if (!reqbody.sellerId) {
+                return { statusCode: 400, status: 'error', message: 'Provide a sellerId' }
+            }
+            const favorite = await FavoriteProduct.distinct('productId', { sellerId: reqbody.sellerId });
+            const favArr = favorite.map((x) => { return ObjectID(x) })
+            filterArr.push({ '_id': { $in: favArr } })
         }
         if (filter_obj) {
             if (filter_obj.categoryName) {
@@ -410,18 +417,19 @@ export const updateProductSeller_Admin = async (reqbody, result) => {
 }
 export const addToFavProduct = async (reqbody) => {
     try {
-        const favorite = await Favorite.findOne({ buyerId: reqbody.buyerId, productId: reqbody.productId });
+        const favorite = await FavoriteProduct.findOne({ sellerId: reqbody.sellerId, productId: reqbody.productId });
         if (favorite) {
             return { statusCode: 400, status: 'error', message: 'Product already added into favorites' }
         }
-        let addToFav = new Favorite(reqbody);
+        console.log('reqbody',reqbody)
+        let addToFav = new FavoriteProduct(reqbody);
         await addToFav.save();
         const product = await Product.findOne({ _id: ObjectID(reqbody.productId) })
         if (product) {
             const favCount = product?.favoritesCount ? product?.favoritesCount + 1 : 1;
             await Product.updateOne({ _id: ObjectID(reqbody.productId) }, { favoritesCount: favCount })
             const activity = {
-                userId: reqbody.buyerId,
+                userId: reqbody.sellerId,
                 activityType: 'FAVORITE',
                 typeId: reqbody.productId,
                 sellerId: product?.sellerId
@@ -438,11 +446,11 @@ export const addToFavProduct = async (reqbody) => {
 }
 export const removeFavProduct = async (reqbody) => {
     try {
-        const favorite = await Favorite.findOne({ buyerId: reqbody.buyerId, productId: reqbody.productId });
+        const favorite = await FavoriteProduct.findOne({ sellerId: reqbody.sellerId, productId: reqbody.productId });
         if (!favorite) {
             return { statusCode: 400, status: 'error', message: 'Product not found in favorite' }
         }
-        await Favorite.deleteOne({ buyerId: reqbody.buyerId, productId: reqbody.productId })
+        await FavoriteProduct.deleteOne({ sellerId: reqbody.sellerId, productId: reqbody.productId })
         await UserActivity.deleteOne({ userId: reqbody.userId, typeId: reqbody.productId });
         const product = await Product.findOne({ _id: ObjectID(reqbody.productId) })
         if (product) {
