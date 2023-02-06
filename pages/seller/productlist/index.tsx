@@ -12,6 +12,7 @@ import ProductTableView from "../../../component/ProductItem/product_table";
 import Select from "../../../component/Dropdown";
 import { removeKey } from "../../../utils";
 import Loader from "../../../component/Loader";
+import Title from "../../../component/Ttitle";
 
 const ProductDashboard = () => {
     const router = useRouter();
@@ -64,6 +65,7 @@ const ProductDashboard = () => {
     }, [state.auth, page, limit, filterObj])
     return (
         <>
+                      <Title title="product"/>
             <div className="sideeMenu">
                 <Sidebar />
                 <div className="mainsection">

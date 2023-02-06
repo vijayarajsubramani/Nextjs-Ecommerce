@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import Loader from "../../../component/Loader"
 import ProductTile from "../../../component/ProductTile"
 import { showNotification } from "../../../component/Toast"
+import Title from "../../../component/Ttitle"
 import { DataContext } from "../../../context/user"
 import SellerAuth from "../../../routes/privateRoutes/seller"
 import request from "../../../service/base.service"
@@ -41,6 +42,7 @@ const FavoriteProductPage = () => {
     }, [page, limit, filterObj,sortObj,state?.auth])
     return (
         <>
+            <Title title="favorite"/>
             {loading ? <Loader/> :<ProductTile productImage={product} reload={getProducts} label='Your Favorite Product'/>}
 
         </>

@@ -3,6 +3,7 @@ import Loader from '../../component/Loader';
 import ProductFilter from '../../component/ProductFilter';
 import ProductTile from '../../component/ProductTile';
 import { showNotification } from '../../component/Toast';
+import Title from '../../component/Ttitle';
 import HeaderRoute from '../../routes/HeaderRoutes';
 import request from '../../service/base.service';
 import { removeKey } from '../../utils';
@@ -41,6 +42,7 @@ const HomePage = () => {
 
     return (
         <>
+            <Title title="Unipick"/>
             <ProductFilter setsearchvalue={setsearchvalue} setSortObj={setSortObj} setFilterObj={setFilterObj}/>
             {loading ? <Loader/> :<ProductTile productImage={product} reload={getProducts}/>}
         </>

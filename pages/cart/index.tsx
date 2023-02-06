@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../context/user";
 import CartPrice from "../../container/cart/cartprice";
 import { useRouter } from "next/router";
+import Title from "../../component/Ttitle";
 
 const CartPage = () => {
     const router=useRouter()
@@ -24,6 +25,7 @@ const CartPage = () => {
 
     return (
         <>
+            <Title title="cart"/>
             <div className="sideeMenu">
                 <div className="mainsection">
                     <div className="mt-4 mb-4">

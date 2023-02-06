@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import { useContext, useEffect, useState } from "react"
 import { showNotification } from "../../../component/Toast"
+import Title from "../../../component/Ttitle"
 import MoreFromSellerProduct from "../../../container/more-seller-product"
 import ProductDetail from "../../../container/productDetail"
 import RecentlyViewProduct from "../../../container/recently-view-product"
@@ -25,6 +26,7 @@ const ProductDetailPage = () => {
     }, [id])
     return (
         <>
+            <Title title="product"/>
             <div className="sideeMenu">
                 <div className="mt-4 mb-4 col-1">
                     <button className="btn btn-info" onClick={() => router.back()}>

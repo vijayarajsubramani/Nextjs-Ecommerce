@@ -2,6 +2,7 @@ import { useRouter } from "next/router"
 import { useContext, useEffect, useState } from "react"
 import Sidebar from "../../../component/Sidebar"
 import { showNotification } from "../../../component/Toast"
+import Title from "../../../component/Ttitle"
 import Addproduct from "../../../container/addProduct"
 import { DataContext } from "../../../context/user"
 import SellerAuth from "../../../routes/privateRoutes/seller"
@@ -24,6 +25,7 @@ const ProductEdit = () => {
     }, [id])
     return (
         <>
+            <Title title="product"/>
             <div className="sideeMenu">
                 <Sidebar />
                 <div className="mainsection">

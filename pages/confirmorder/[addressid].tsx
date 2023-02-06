@@ -2,6 +2,7 @@ import { useRouter } from "next/router"
 import { useContext, useEffect, useState } from "react"
 import PaymentProgress from "../../component/Paymentprogress"
 import { showNotification } from "../../component/Toast"
+import Title from "../../component/Ttitle"
 import { OrderConfirm } from "../../container/orderconfirm"
 import { DataContext } from "../../context/user"
 import HeaderRoute from "../../routes/HeaderRoutes"
@@ -31,6 +32,7 @@ const OrderConfirmPage = () => {
     }, [state.auth, addId])
     return (
         <>
+            <Title title="confirmorder"/>
             <div className="d-flex justify-content-between">
                 <div className="mt-4 mb-4 col-1">
                     <button className="btn btn-info" onClick={() => router.back()}>
