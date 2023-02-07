@@ -492,10 +492,11 @@ export const getbulkTemplate = async (reqbody) => {
 }
 export const sellerProductBulkupload=async(req)=>{
     try{
-        const workbook = XLSX.read( req, { type: 'base64', raw: true, cellDates: true });
+        console.log('req',req.body.file)
+        const workbook = XLSX.read( req.body, { type: 'base64', raw: true, cellDates: true });
         const product_Lists = XLSX.utils.sheet_to_json(workbook.Sheets.productTemplate, { raw: true, header: 1, blankRows: false, defval: '' });
         console.log('workbook',product_Lists)
-        return { statusCode: 200, status: 'success', message: 'Bulk upload templete created successfully' }
+        return { statusCode: 200, status: 'success', message: 'Bulk upload templete update successfully' }
     }
     catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };

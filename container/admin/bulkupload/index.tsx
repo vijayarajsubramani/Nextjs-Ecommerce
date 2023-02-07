@@ -24,9 +24,8 @@ const AdminbulkUploadProduct = () => {
         try{
             const formData=new FormData();
             formData.append('file',e?.target.files[0])
-            formData.append('sellerId','1234')
-            const headers ={'Content-Type': 'multipart/form-data' }
-            request({url:'/api/product/bulkuploadproduct',method:'patch',headers:headers,data:formData}).then((res)=>{
+            // const headers ={'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+            request({url:'/api/product/bulkuploadproduct',method:'patch',data:formData}).then((res)=>{
                 console.log('res')
             })
         }catch(err){
@@ -35,7 +34,7 @@ const AdminbulkUploadProduct = () => {
     }
 
     useEffect(() => {
-        sellNames()
+        // sellNames()
     }, [])
     return (
         <>

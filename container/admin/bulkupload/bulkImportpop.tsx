@@ -27,7 +27,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
     }
     const download = (arrayBuffer) => {
         let arrayBufferNew = new Uint8Array(arrayBuffer);
-        let file = URL.createObjectURL(new Blob([arrayBufferNew.buffer], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+        let file = URL.createObjectURL(new Blob([arrayBufferNew.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
         const link = document.createElement("a");
         link.href = file;
         link.setAttribute("download", 'getTemplate.xlsx');
