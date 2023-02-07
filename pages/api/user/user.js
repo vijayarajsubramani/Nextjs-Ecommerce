@@ -1,4 +1,4 @@
-import { getallUser,approveByAdmin } from '../../../controller/auth.controller'
+import { getallUser,approveByAdmin,getuserNamebyAdmin } from '../../../controller/auth.controller'
 import { getallUserSchema,activeByAdmin} from '../../../validator/validation';
 import connectDB from '../../../common/mongod'
 
@@ -8,6 +8,9 @@ connectDB();
 
 export default async (req, res) => {
     switch (req.method) {
+        case 'GET':{
+            await getUser(req,res)
+        }
         case 'POST':{
             await getallData(req,res);
             break;
@@ -16,6 +19,21 @@ export default async (req, res) => {
             await sellerApproveByAdmin(req,res);
             break;
         }
+    }
+}
+const getUser=async(req,res)=>{
+    try{
+        const result = await checkJwtToken(req, res)
+        if (!result) {
+            return res.status(400).json({ statusCode: 400, status: 'error', message: 'Authentication is not valid.' })
+        } else {
+            const getdata = await getuserNamebyAdmin(req);
+            return res.status(getdata.statusCode).send(getdata)
+        }
+
+    }catch(error){
+        return res.status(500).send({ statusCode: 500, status: 'error', message: error.message });
+
     }
 }
 const getallData=async(req,res)=>{

@@ -16,6 +16,7 @@ const Sidebar = () => {
     const adminMenu = [
         { name: "User", url: "/admin/user", disabled: false },
         { name: "Product", url: "/admin/product", disabled: false },
+        { name: "Bulkupload", url: "/admin/bulkupload", disabled: false },
         { name: "Category", url: "/admin/category", disabled: false }
     ]
     const sellerMenu = [

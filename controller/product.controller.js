@@ -1,11 +1,15 @@
 import connectDB from '../common/mongod';
 import User from '../model/user'
-const ObjectID = require('mongodb').ObjectId;
 import Product from '../model/product';
 import RecentlyView from '../model/recentlyview'
 import UserActivity from '../model/userActivity';
 import Category from '../model/category'
 import FavoriteProduct from '../model/favorite';
+const XLSX = require('xlsx');
+const path = require('path');
+const fs = require('fs');
+const ObjectID = require('mongodb').ObjectId;
+
 connectDB();
 
 
@@ -421,7 +425,7 @@ export const addToFavProduct = async (reqbody) => {
         if (favorite) {
             return { statusCode: 400, status: 'error', message: 'Product already added into favorites' }
         }
-        console.log('reqbody',reqbody)
+        console.log('reqbody', reqbody)
         let addToFav = new FavoriteProduct(reqbody);
         await addToFav.save();
         const product = await Product.findOne({ _id: ObjectID(reqbody.productId) })
@@ -462,6 +466,38 @@ export const removeFavProduct = async (reqbody) => {
 
 
     } catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+}
+export const getbulkTemplate = async (reqbody) => {
+    try {
+        let colunmName = [], column = ['Product', 'productname', 'description', 'images', 'price', 'quantity']
+        const category = await Category.findOne({ _id: ObjectID(reqbody.categoryId) })
+        colunmName.push(column)
+        const workbook = XLSX.utils.book_new();
+        const worksheet1 = XLSX.utils.json_to_sheet(colunmName, { skipHeader: true })
+        XLSX.utils.book_append_sheet(workbook, worksheet1, 'productTemplate')
+        XLSX.utils.sheet_add_json(workbook.Sheets.productTemplate, [{ categoryname: category.name }]), { skipHeader: true, origin: { r: 2, c: 3 } }
+        let filepath = './assets/bulktemplate/bulk.xlsx'
+        XLSX.writeFile(workbook, filepath)
+        XLSX.readFile(filepath)
+        const credpath = path.join(process.cwd(), '/assets/bulktemplate/bulk.xlsx')
+        const productTemplate = fs.readFileSync(credpath)
+        fs.unlink(filepath, err => { console.log('error', err) })
+        return { statusCode: 200, status: 'success', message: 'Bulk upload templete created successfully', productTemplate }
+
+    } catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+}
+export const sellerProductBulkupload=async(req)=>{
+    try{
+        const workbook = XLSX.read( req, { type: 'base64', raw: true, cellDates: true });
+        const product_Lists = XLSX.utils.sheet_to_json(workbook.Sheets.productTemplate, { raw: true, header: 1, blankRows: false, defval: '' });
+        console.log('workbook',product_Lists)
+        return { statusCode: 200, status: 'success', message: 'Bulk upload templete created successfully' }
+    }
+    catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }

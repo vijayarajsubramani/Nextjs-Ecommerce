@@ -9,6 +9,10 @@ import Select from "../../../component/Dropdown";
 import { DataContext } from "../../../context/user";
 import { removeKey } from '../../../utils'
 import Loader from "../../../component/Loader";
+import readXlsxFile from 'read-excel-file'
+import fs from 'fs';
+
+
 
 const ProductAdmin = () => {
     const { state } = useContext(DataContext)
@@ -59,6 +63,7 @@ const ProductAdmin = () => {
             showNotification(false, err.data.message)
         })
     }
+
     const pagination = (e: any, data: any) => {
         e.preventDefault();
         let pag: number = 0
@@ -80,6 +85,7 @@ const ProductAdmin = () => {
     useEffect(() => {
         getProducts();
     }, [page, limit, filterObj])
+
     return (
         <>
             <div className="sideeMenu">
@@ -89,21 +95,23 @@ const ProductAdmin = () => {
                     <div>
                         <div className={styles.productsearch}>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-3">
+                                    <label className='dropdown'>Product Name Search</label><br />
                                     <input type='text' className={styles.input} placeholder="search product" value={filterObj.productname} onChange={(e: any) => setFilterObj({ ...filterObj, productname: e.target.value })} />
                                 </div>
-                                <div className="col-6">
-                                    <input type='text'className={styles.input} placeholder="search seller" value={filterObj.sellerName} onChange={(e: any) => setFilterObj({ ...filterObj, sellerName: e.target.value })} />
+                                <div className="col-3">
+                                    <label className='dropdown'>Sellar Name Search</label><br />
+                                    <input type='text' className={styles.input} placeholder="search seller" value={filterObj.sellerName} onChange={(e: any) => setFilterObj({ ...filterObj, sellerName: e.target.value })} />
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-6">
+                                <div className="col-3">
                                     <Select data={category} label='Category' handlechange={handleChangeCategory} />
                                 </div>
-                                <div className="col-6">
+                                <div className="col-3">
                                     <Select data={[{ _id: 'APPROVED', name: 'Approved' }, { _id: 'PENDING', name: 'Pending' }, { _id: 'REJECTED', name: 'Rejected' }]} label='Product Status' handlechange={handleChangeStautus} />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                         </div>
                         {loading ? <Loader /> : <div className="w-100 mx-4">
                             <Table data={product} sno={sno} route='/admin/product' />

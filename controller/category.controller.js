@@ -4,6 +4,18 @@ const ObjectId = require('mongodb').ObjectId;
 
 connectDB();
 
+export const getAllcateName=async(req)=>{
+    try{
+        let aggregatePipeline = [];
+        aggregatePipeline.push({ $project: { "_id": 1, "name": 1 } })
+        const getData = await Category.aggregate(aggregatePipeline);
+        return { statusCode: 200, status: 'success', message: 'Successfully getall data',data:getData  }
+
+    }catch(error){
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+
+}
 export const getCategory=async(reqbody)=>{
     try{
         let aggregatePipeline = [];

@@ -1,4 +1,4 @@
-import { addCategory, updateCategory,getCategory,deleteCategory } from '../../../controller/category.controller'
+import { addCategory, updateCategory,getCategory,deleteCategory,getAllcateName } from '../../../controller/category.controller'
 import { createCategorySchema, updateCategorySchema,getCategorySchema ,deleteCategorySchema} from '../../../validator/validation';
 import connectDB from '../../../common/mongod'
 import { checkJwtToken } from '../../../common/constants'
@@ -21,6 +21,24 @@ export default async (req, res) => {
         case 'DELETE':{
             await removeCategory(req,res)
         }
+        case 'GET':{
+            await getallCategoryName(req,res)
+        }
+    }
+}
+const getallCategoryName=async(req,res)=>{
+    try{
+        const result = await checkJwtToken(req, res)
+        if (!result) {
+            return res.status(400).json({ statusCode: 400, status: 'error', message: 'Authentication is not valid.' })
+        } else {
+            const getdata = await getAllcateName(req.body);
+            return res.status(getdata.statusCode).send(getdata)
+        }
+
+    }catch(error){
+        return res.status(500).send({ statusCode: 500, status: 'error', message: error.message });
+
     }
 }
 const getallData=async(req,res)=>{
