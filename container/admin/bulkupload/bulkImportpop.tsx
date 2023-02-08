@@ -30,7 +30,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
         let file = URL.createObjectURL(new Blob([arrayBufferNew.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
         const link = document.createElement("a");
         link.href = file;
-        link.setAttribute("download", 'getTemplate.xlsx');
+        link.setAttribute("download", `${new Date()}.xlsx`);
         document.body.appendChild(link);
         link.click();
 
@@ -61,7 +61,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
                             {error && cateId===''  ? <p className='error'> {error}</p> : ''}
                         </div>
                         <div className={styles.btnContainer}>
-                            <button className="btn btn-primary" type='button' onClick={() => getTemplate()}>Submit</button>
+                            <button className="btn btn-primary" type='button' disabled={cateId ? false : true} onClick={() => getTemplate()}>Submit</button>
                         </div>
                         <div className={styles.btnContainer}>
                             <button type='button' className="btn btn-dark" onClick={() => close(false)}>Cancel</button>

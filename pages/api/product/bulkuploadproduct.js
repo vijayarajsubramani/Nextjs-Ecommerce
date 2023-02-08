@@ -26,14 +26,11 @@ const bulkuploadSellerProduct = async (req, res) => {
         if (!result) {
             return res.status(400).json({ statusCode: 400, status: 'error', message: 'Authentication is not valid.' })
         } else {
-            const form = new formidable.IncomingForm();
             try {
+                const form = new formidable.IncomingForm();
                 await new Promise(function (resolve, reject) {
                     form.parse(req, async (err, fields, files) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
+                        if (err) reject(err)
                         try {
                             const getdata = await sellerProductBulkupload(fields, files);
                             return res.status(getdata.statusCode).send(getdata)
