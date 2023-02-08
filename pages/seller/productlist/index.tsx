@@ -13,6 +13,8 @@ import Select from "../../../component/Dropdown";
 import { removeKey } from "../../../utils";
 import Loader from "../../../component/Loader";
 import Title from "../../../component/Ttitle";
+import styles from './styles.module.css'
+
 
 const ProductDashboard = () => {
     const router = useRouter();
@@ -65,7 +67,7 @@ const ProductDashboard = () => {
     }, [state.auth, page, limit, filterObj])
     return (
         <>
-                      <Title title="product"/>
+            <Title title="product" />
             <div className="sideeMenu">
                 <Sidebar />
                 <div className="mainsection">
@@ -80,11 +82,16 @@ const ProductDashboard = () => {
                     </div>
                     <div>
                         {tab &&
-                            <div className='row'>
-                                <div className="col-6">
-                                    {/* <input type='text' placeholder="search product" value={filterObj.productname} onChange={(e: any) => setFilterObj({ ...filterObj, productname: e.target.value })} /> */}
+                            <div className='row m-2'>
+                                <div className="col-3">
+                                    <label className='dropdown'>Product Name Search</label><br />
+                                    <input type='text' className={styles.input} placeholder="search product" value={filterObj.productname} onChange={(e: any) => setFilterObj({ ...filterObj, productname: e.target.value })} />
                                 </div>
-                                <div className="col-6">
+                                <div className="col-3">
+                                    <label className='dropdown'>Sellar Name Search</label><br />
+                                    <input type='text' className={styles.input} placeholder="search seller" value={filterObj.sellerName} onChange={(e: any) => setFilterObj({ ...filterObj, sellerName: e.target.value })} />
+                                </div>
+                                <div className="col-3">
                                     <Select data={[{ _id: 'APPROVED', name: 'Approved' }, { _id: 'PENDING', name: 'Pending' }, { _id: 'REJECTED', name: 'Rejected' }]} label='Product Status' handlechange={handleChangeStautus} />
                                 </div>
                             </div>}

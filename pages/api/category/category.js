@@ -17,12 +17,15 @@ export default async (req, res) => {
         }
         case 'PUT': {
             await editCategory(req, res)
+            break;
         }
         case 'DELETE':{
             await removeCategory(req,res)
+            break;
         }
         case 'GET':{
             await getallCategoryName(req,res)
+            break;
         }
     }
 }

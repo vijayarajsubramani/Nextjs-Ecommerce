@@ -8,6 +8,7 @@ import FavoriteProduct from '../model/favorite';
 const XLSX = require('xlsx');
 const path = require('path');
 const fs = require('fs');
+
 const ObjectID = require('mongodb').ObjectId;
 
 connectDB();
@@ -471,13 +472,14 @@ export const removeFavProduct = async (reqbody) => {
 }
 export const getbulkTemplate = async (reqbody) => {
     try {
-        let colunmName = [], column = ['Product', 'productname', 'description', 'images', 'price', 'quantity']
-        const category = await Category.findOne({ _id: ObjectID(reqbody.categoryId) })
+        let colunmName = [];
+        let column = ['PRODUCT', 'productname', 'description', 'images', 'price', 'quantity']
+        const category = await Category.findOne({ '_id': ObjectID(reqbody?.categoryId) })
         colunmName.push(column)
         const workbook = XLSX.utils.book_new();
         const worksheet1 = XLSX.utils.json_to_sheet(colunmName, { skipHeader: true })
         XLSX.utils.book_append_sheet(workbook, worksheet1, 'productTemplate')
-        XLSX.utils.sheet_add_json(workbook.Sheets.productTemplate, [{ categoryname: category.name }]), { skipHeader: true, origin: { r: 2, c: 3 } }
+        XLSX.utils.sheet_add_json(workbook.Sheets.productTemplate, [{ 'categoryname': category?.name }]), { skipHeader: true, origin: { r: 2, c: 3 } }
         let filepath = './assets/bulktemplate/bulk.xlsx'
         XLSX.writeFile(workbook, filepath)
         XLSX.readFile(filepath)
@@ -490,13 +492,102 @@ export const getbulkTemplate = async (reqbody) => {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }
-export const sellerProductBulkupload=async(req)=>{
-    try{
-        console.log('req',req.body.file)
-        const workbook = XLSX.read( req.body, { type: 'base64', raw: true, cellDates: true });
+
+export const sellerProductBulkupload = async (body, files) => {
+    try {
+        const workbook = XLSX.readFile(files.file.filepath);
         const product_Lists = XLSX.utils.sheet_to_json(workbook.Sheets.productTemplate, { raw: true, header: 1, blankRows: false, defval: '' });
-        console.log('workbook',product_Lists)
-        return { statusCode: 200, status: 'success', message: 'Bulk upload templete update successfully' }
+        if (product_Lists.length === 0) {
+            return { statusCode: 400, status: 'error', message: 'Invalid template file' }
+        }
+        if (!body.sellerId) {
+            return { statusCode: 400, status: 'error', message: 'choose seller' }
+        }
+        const user = await User.findOne({ _id: ObjectID(body.sellerId) })
+        if (!user || !user?.role?.includes('SELLER')) {
+            return { statusCode: 400, status: 'error', message: 'seller not found' }
+        }
+        let productlist = [];
+        let negativeFieldname = [];
+        const nagativeValue = (name) => {
+            negativeFieldname.push(name)
+        }
+        let column = ['categoryname', 'productname', 'description', 'images', 'price', 'quantity']
+        for (let i = 0; i < product_Lists.length - 1; i++) {
+            if (product_Lists[i][0] !== '') {
+                let k = 0;
+                var productDetails = [];
+                let obj = {};
+                product_Lists[k].forEach((element, index) => {
+                    if (column.includes(element)) {
+                        obj[element] = product_Lists[i + 1][index]
+                    } else {
+                        nagativeValue(element)
+                    }
+                })
+                productDetails.push(obj)
+            }
+            productlist.push(productDetails)
+        }
+        console.log('negativeFieldname', negativeFieldname)
+        if (negativeFieldname.length !== 0) {
+            let removed = negativeFieldname.pop();
+            let fieldname = negativeFieldname.toString();
+            if (negativeFieldname.length === 0) {
+                fieldname = fieldname.concat(removed)
+            } else {
+                fieldname = fieldname.concat('and' + removed)
+            }
+            return { statusCode: 400, status: 'error', message: `please provide a valid for + ${fieldname}` }
+        }
+        let productNameList = '';
+        const totalproduct = []
+        for (let product of productlist) {
+            const products = {};
+            for (let i = 0; i < product.length; i++) {
+                if (product[i]) {
+                    if (product[i].productname === '' || product[i].description === '' || product[i].price === '' || product[i].quantity === '') {
+                        return { statusCode: 400, status: 'error', message: `prduct details couldnt be empty ${product[i].productname}` }
+                    }
+                    let productname = product[i].productname || 'good'
+                    if (productNameList.includes(productname) === true) {
+                        return { statusCode: 400, status: 'error', message: `product name must be unique` }
+                    }
+                    products.productname = productname
+                    if (productname) {
+                        let product = await Product.findOne({ productname: productname, isProductDeleted: false })
+                        if (product) {
+                            return { statusCode: 400, status: 'error', message: `product already added`, data: { productname: product.productname } }
+
+                        }
+                    }
+                    products.description = product[i].description;
+                    products.sellerId = body.sellerId
+                    products.images = (product[i].images.toString().split(',')) || []
+                    products.price = product[i].price
+                    products.quantity = product[i].quantity
+                    const category = await Category.findOne({ name: { $regex: product[i].categoryname.toString().trim() } })
+                    if (category) {
+                        products.categoryId = category._id || ''
+                        products.categoryname = category.name;
+                    } else {
+                        return { statusCode: 400, status: 'error', message: `Invalid product category` }
+                    }
+                    totalproduct.push(products)
+                }
+            }
+        }
+        await Promise.all(
+            totalproduct.map(async (element) => {
+                if (element) {
+                    element.isBulkUpload = true;
+                    let addproducts = Product(element)
+                    await addproducts.save()
+                }
+            })
+        )
+        const productlistbulk = await Product.find({ sellerId: body.sellerId, isProductDeleted: false })
+        return { statusCode: 200, status: 'success', message: 'Bulk upload templete added successfully', data: { productlist: productlistbulk, count: productlistbulk.length } }
     }
     catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };

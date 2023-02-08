@@ -55,9 +55,9 @@ export const getallUser = async (reqbody) => {
     }
 
 }
-export const getuserNamebyAdmin=async(req)=>{
-    try{
-        const userdetails=await User.find({role:'SELLER',isActive:'true'},{name:1})
+export const getuserNamebyAdmin = async () => {
+    try {
+        const userdetails = await User.find({ role: 'SELLER', isActive: 'true' }, { name: 1 })
         return { statusCode: 200, status: 'success', message: 'Successfully ', data: userdetails }
     }
     catch (error) {
@@ -86,7 +86,7 @@ export const approveByAdmin = async (reqbody) => {
                         as: 'cartDetails'
                     }
                 },
-               {
+                {
                     $project: { _id: 1 }
                 }
             ])

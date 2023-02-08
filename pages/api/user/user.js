@@ -10,6 +10,7 @@ export default async (req, res) => {
     switch (req.method) {
         case 'GET':{
             await getUser(req,res)
+            break
         }
         case 'POST':{
             await getallData(req,res);
@@ -27,7 +28,7 @@ const getUser=async(req,res)=>{
         if (!result) {
             return res.status(400).json({ statusCode: 400, status: 'error', message: 'Authentication is not valid.' })
         } else {
-            const getdata = await getuserNamebyAdmin(req);
+            const getdata = await getuserNamebyAdmin();
             return res.status(getdata.statusCode).send(getdata)
         }
 

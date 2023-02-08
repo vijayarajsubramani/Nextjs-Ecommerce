@@ -12,4 +12,4 @@
 12.Order Confirm Page
 13.Profile page
 14.Product Favorite
-14.Logout   
+15.Admin bulk upload

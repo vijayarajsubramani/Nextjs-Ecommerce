@@ -50,6 +50,10 @@ const productSchema = new mongoose.Schema({
     isSellerActive: {
         type: Boolean,
         default: true
+    },
+    isBulkUpload:{
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

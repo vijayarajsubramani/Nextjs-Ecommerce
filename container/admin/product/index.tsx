@@ -9,8 +9,6 @@ import Select from "../../../component/Dropdown";
 import { DataContext } from "../../../context/user";
 import { removeKey } from '../../../utils'
 import Loader from "../../../component/Loader";
-import readXlsxFile from 'read-excel-file'
-import fs from 'fs';
 
 
 

@@ -15,8 +15,8 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
     const [categoryList, setCategoryList] = useState([])
     const [cateId, setCatId] = useState('')
     const [error,setError]=useState('')
-    const categoryNames = () => {
-        request({ url: '/api/category/category', method: 'get' }).then((res) => {
+    const categoryNames = async() => {
+        await request({ url: '/api/category/category', method: 'get' }).then((res) => {
             if (res.status === 'success') {
                 setCategoryList(res?.data)
             }
@@ -37,7 +37,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
     }
     const getTemplate = async () => {
         if(cateId){
-            request({ url: '/api/product/bulkuploadproduct', method: 'post', data: { categoryId: cateId } }).then(async (res) => {
+            request({ url: '/api/product/getTemplateProduct', method: 'post', data: { categoryId: cateId } }).then(async (res) => {
                 if(res?.status==='success'){
                     download(res?.productTemplate?.data)
                     close(false)
