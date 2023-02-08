@@ -29,7 +29,7 @@ const AdminbulkUploadProduct = () => {
                 formData.append('file', e?.target.files[0])
                 formData.append('sellerId', sellerId)
                 const headers = { 'Content-Type': 'multipart/form-data' }
-                request({ url: '/api/product/bulkuploadProduct', method: 'post', headers: headers, data: formData }).then((res) => {
+                request({ url: '/api/product/bulkuploadproduct', method: 'post', headers: headers, data: formData }).then((res) => {
                     showNotification(true, res?.message)
                 }).catch((err)=>{
                     showNotification(false, err?.data?.message)
