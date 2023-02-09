@@ -12,18 +12,21 @@ module.exports.registerSchema = joi.object({
 module.exports.getallUserSchema = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
-    filterObj:joi.object({
-        role:joi.string().valid('SELLER','ADMIN','OTHER'),
-        field:joi.string(),
-        value:joi.when('field',{
-            is:joi.string().valid('all'),
-            then:joi.string().allow("").required(),
-            otherwise:joi.string().valid(null)
+    filterObj: joi.object({
+        role: joi.string().valid('SELLER', 'ADMIN', 'OTHER'),
+        field: joi.string(),
+        value: joi.when('field', {
+            is: joi.string().valid('all'),
+            then: joi.string().allow("").required(),
+            otherwise: joi.string().valid(null)
         }),
-        isActive:joi.boolean(),
+        isActive: joi.boolean(),
     }),
-    sortObj:joi.object({
-        createdAt:joi.number().valid(-1,1),
+    sortObj: joi.object({
+        createdAt: joi.number().valid(-1, 1),
+        name:joi.number().valid(1,-1),
+        email:joi.number().valid(1,-1),
+        mobile:joi.number().valid(1,-1)
     }).max(1)
 })
 module.exports.activeByAdmin = joi.object({
@@ -35,6 +38,11 @@ module.exports.loginSchema = joi.object({
     name: joi.string().required(),
     password: joi.string().min(6).max(30).required(),
 })
+module.exports.changePasswordSchema = joi.object({
+    username: joi.string().required(),
+    password: joi.string().min(6).max(30).required(),
+    confirmpassword: joi.any().valid(joi.ref('password'))
+});
 module.exports.signOutSchema = joi.object({
     token: joi.string().required()
 });
@@ -42,6 +50,10 @@ module.exports.signOutSchema = joi.object({
 module.exports.getCategorySchema = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
+    sortObj: joi.object({
+        createdAt: joi.number().valid(-1, 1),
+        name:joi.number().valid(1,-1),
+    }).max(1)
 })
 module.exports.createCategorySchema = joi.object({
     name: joi.string().min(3).max(30).required(),
@@ -59,8 +71,8 @@ module.exports.addProductSchema = joi.object({
     productname: joi.string().min(3).max(30).required(),
     categoryId: joiObjectId().required(),
     images: joi.array(),
-    price:joi.number().required(),
-    quantity:joi.number().required(),
+    price: joi.number().required(),
+    quantity: joi.number().required(),
     description: joi.string().min(3).max(300).required(),
 
 })
@@ -69,19 +81,25 @@ module.exports.getProductSchemabySeller = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
     searchValue: joi.string(),
-    primaryFilterObj:joi.object({
-        primaryFilterName:joi.string().allow(null),
-        primaryFilterValue:joi.string().allow(null),
+    primaryFilterObj: joi.object({
+        primaryFilterName: joi.string().allow(null),
+        primaryFilterValue: joi.string().allow(null),
     }),
-    filterObj:joi.object({
-        productname:joi.string().allow(null),
+    filterObj: joi.object({
+        productname: joi.string().allow(null),
         categoryName: joi.string().allow(null),
         productStatus: joi.string().allow(null),
         sellerName: joi.string().allow(null),
-        minPrice:joi.number().min(1),
-        maxPrice:joi.number().min(1)
+        minPrice: joi.number().min(1),
+        maxPrice: joi.number().min(1)
     }),
-    sortObj: joi.string().valid('createdAt-DESC', 'price-ASC', 'price-DESC'),
+    sortObj: joi.object({
+        createdAt: joi.number().valid(-1, 1),
+        productname: joi.number().valid(-1, 1),
+        quantity: joi.number().valid(-1, 1),
+        price: joi.number().valid(-1, 1),
+        categoryname: joi.number().valid(-1, 1),
+    }).max(1)
 
 })
 module.exports.getAllProductSchema = joi.object({
@@ -89,17 +107,17 @@ module.exports.getAllProductSchema = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
     searchValue: joi.string(),
-    primaryFilterObj:joi.object({
-        primaryFilterName:joi.string().allow(null),
-        primaryFilterValue:joi.string().allow(null),
+    primaryFilterObj: joi.object({
+        primaryFilterName: joi.string().allow(null),
+        primaryFilterValue: joi.string().allow(null),
     }),
-    filterObj:joi.object({
-        productname:joi.string().allow(null),
+    filterObj: joi.object({
+        productname: joi.string().allow(null),
         categoryName: joi.string().allow(null),
         productStatus: joi.string().allow(null),
         sellerName: joi.string().allow(null),
-        minPrice:joi.number().min(1),
-        maxPrice:joi.number().min(1)
+        minPrice: joi.number().min(1),
+        maxPrice: joi.number().min(1)
     }),
     sortObj: joi.string().valid('createdAt-DESC', 'price-ASC', 'price-DESC'),
 
@@ -107,27 +125,31 @@ module.exports.getAllProductSchema = joi.object({
 module.exports.getProductSchemabyAdmin = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
-    filterObj:joi.object({
-        productname:joi.string().allow(null),
+    filterObj: joi.object({
+        productname: joi.string().allow(null),
         categoryName: joi.string().allow(null),
         productStatus: joi.string().allow(null),
         sellerName: joi.string().allow(null),
     }),
-    sortObj:joi.object({
-        createdAt:joi.number().valid(-1,1),
+    sortObj: joi.object({
+        createdAt: joi.number().valid(-1, 1),
+        productname: joi.number().valid(-1, 1),
+        quantity: joi.number().valid(-1, 1),
+        price: joi.number().valid(-1, 1),
+        categoryname: joi.number().valid(-1, 1),
     }).max(1)
 })
-module.exports.getProductSchema=joi.object({
+module.exports.getProductSchema = joi.object({
     page: joi.number().min(1).required(),
     limit: joi.number().min(1).required(),
-    filterObj:joi.object({
-        productname:joi.string().allow(null),
+    filterObj: joi.object({
+        productname: joi.string().allow(null),
         categoryName: joi.string().allow(null),
         productStatus: joi.string().allow(null),
         sellerName: joi.string().allow(null),
     }),
-    sortObj:joi.object({
-        createdAt:joi.number().valid(-1,1),
+    sortObj: joi.object({
+        createdAt: joi.number().valid(-1, 1),
     }).max(1)
 })
 module.exports.getSingleProductScgema = joi.object({
@@ -143,8 +165,8 @@ module.exports.updateProductSchema = joi.object({
     productname: joi.string().min(3).max(30).required(),
     categoryId: joiObjectId().required(),
     images: joi.array(),
-    price:joi.number().required(),
-    quantity:joi.number().required(),
+    price: joi.number().required(),
+    quantity: joi.number().required(),
     description: joi.string().min(3).max(300).required(),
 
 })
@@ -153,29 +175,43 @@ module.exports.updateAdminProductSchema = joi.object({
     productname: joi.string().min(3).max(30).required(),
     categoryId: joiObjectId().required(),
     images: joi.array(),
-    price:joi.number().required(),
-    quantity:joi.number().required(),
+    price: joi.number().required(),
+    quantity: joi.number().required(),
     description: joi.string().min(3).max(300).required(),
 
 })
+module.exports.bulkProductsSchema=joi.object({
+    sellerId: joiObjectId().required(),
+    productname: joi.string().min(3).max(30).required(),
+    categoryname: joi.string().min(3).max(30).required(),
+    categoryId: joiObjectId().required(),
+    images: joi.array(),
+    price: joi.number().required(),
+    quantity: joi.number().required(),
+    description: joi.string().min(3).max(300).required(),
+})
+module.exports.updateSellerIdToProductSchema = joi.object({
+    sellerId: joiObjectId().required(),
+    productId: joiObjectId().required(),
+});
 
 //cart
-module.exports.addtoCartSchema=joi.object({
+module.exports.addtoCartSchema = joi.object({
     buyerId: joiObjectId().required(),
     productId: joiObjectId().required(),
     productname: joi.string().required(),
-    productImage:joi.array(),
-    quantity:joi.number().required(),
-    price:joi.number().required(),
+    productImage: joi.array(),
+    quantity: joi.number().required(),
+    price: joi.number().required(),
 })
-module.exports.getAllCartSchema=joi.object({
+module.exports.getAllCartSchema = joi.object({
     buyerId: joiObjectId().required()
 })
-module.exports.deleteCartSchema=joi.object({
+module.exports.deleteCartSchema = joi.object({
     cartId: joiObjectId().required()
 })
 //address
-module.exports.addAddressSchema=joi.object({
+module.exports.addAddressSchema = joi.object({
     buyerId: joiObjectId().required(),
     name: joi.string().min(3).max(30).required(),
     address: joi.string().min(3).max(50).required(),
@@ -188,7 +224,7 @@ module.exports.addAddressSchema=joi.object({
     addressType: joi.string(),
     isDefaultAddress: joi.boolean(),
 })
-module.exports.updateAddressSchema=joi.object({
+module.exports.updateAddressSchema = joi.object({
     addressId: joiObjectId().required(),
     buyerId: joiObjectId().required(),
     name: joi.string().min(3).max(30).required(),
@@ -202,32 +238,32 @@ module.exports.updateAddressSchema=joi.object({
     addressType: joi.string(),
     isDefaultAddress: joi.boolean(),
 })
-module.exports.getAllAddressSchema=joi.object({
+module.exports.getAllAddressSchema = joi.object({
     buyerId: joiObjectId().required()
 })
-module.exports.getbyIdAddressSchema=joi.object({
+module.exports.getbyIdAddressSchema = joi.object({
     buyerId: joiObjectId().required(),
     addressId: joiObjectId().required(),
 })
-module.exports.deleteAddressSchema=joi.object({
+module.exports.deleteAddressSchema = joi.object({
     buyerId: joiObjectId().required(),
     addressId: joiObjectId().required(),
 
 })
 //favorite
-module.exports.addtoFovoriteSchema=joi.object({
+module.exports.addtoFovoriteSchema = joi.object({
     sellerId: joiObjectId().required(),
     favoriteType: joi.string().valid('PRODUCT').required(),
-    productId:joi.when('favoriteType',{
-        is:joi.string().valid('PRODUCT'),
-        then:joiObjectId().required(),
-        otherwise:joi.valid(null)
+    productId: joi.when('favoriteType', {
+        is: joi.string().valid('PRODUCT'),
+        then: joiObjectId().required(),
+        otherwise: joi.valid(null)
     }),
-    isFovrite:joi.boolean().required()
+    isFovrite: joi.boolean().required()
 
 })
 //order
-module.exports.orderVerifySchema=joi.object({
+module.exports.orderVerifySchema = joi.object({
     sellerId: joiObjectId().required(),
     addressId: joiObjectId().required(),
 })

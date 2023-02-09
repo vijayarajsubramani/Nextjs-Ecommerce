@@ -14,6 +14,7 @@ export const getallUser = async (reqbody) => {
     try {
         let aggregatePipeline = [];
         let filter_obj = {};
+        let sortObjFinlal = {};
         let sort_obj = reqbody.sortObj;
         const page = reqbody.page || 1;
         const limit = reqbody.limit || 10;
@@ -39,9 +40,16 @@ export const getallUser = async (reqbody) => {
             aggregatePipeline.push(filter)
         }
         if (sort_obj) {
-            const sort_app = { $sort: sort_obj }
-            aggregatePipeline.push(sort_app)
-
+            if (sort_obj.name) {
+                sortObjFinlal = { 'name': sort_obj.name }
+            } else if (sort_obj.email) {
+                sortObjFinlal = { 'email': sort_obj.email }
+            }
+            else if (sort_obj.mobile) {
+                sortObjFinlal = { 'email': sort_obj.mobile }
+            }
+            sortObjFinlal._id = -1;
+            aggregatePipeline.push({ $sort: sortObjFinlal })
         }
         aggregatePipeline.push({ $project: { "_id": 1, "name": 1, "email": 1, 'mobile': 1, 'role': 1, 'avatar': 1, 'isActive': 1 } })
         const totalRecordsCount = await User.aggregate(aggregatePipeline)
@@ -141,6 +149,28 @@ export const login = async (reqbody) => {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 
+}
+export const passwordChange = async (reqbody) => {
+    try {
+        let user = await User.findOne({ $or: [{ mobile: reqbody.username }, { email: reqbody.email }] })
+        const hashpassword = await bcrypt.hash(reqbody.password, 5)
+        if (!user) {
+            return { statusCode: 400, status: 'error', message: 'Incorrect username or password' }
+        }
+        if (await bcrypt.compare(reqbody.password, user.password)) {
+            return { statusCode: 400, status: 'error', message: 'This is your previous password' }
+        }
+        let additional = {
+            password: hashpassword.toString()
+        }
+        Object.assign(user, additional)
+        await user.save()
+        return { statusCode: 200, status: 'success', message: 'Your password has been reset successfully, Please sign in' }
+
+    } catch (error) {
+        return { statusCode: 500, status: 'error', message: error.message };
+
+    }
 }
 export const logoutUser = async (reqbody) => {
     try {

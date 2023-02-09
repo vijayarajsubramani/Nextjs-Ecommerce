@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { useContext } from 'react'
+import Sorting from '../../../component/Sorting'
 import { DataContext } from '../../../context/user'
 
 
@@ -7,27 +8,32 @@ interface Tprops {
     data?: any,
     route?: string,
     sno?: any,
+    sort?: any,
+    setSorttoggle?:(e:boolean)=>void,
+    sorttoggle?:boolean,
 }
 
-const Table: React.FC<Tprops> = ({ data, sno, route }) => {
-    const { state, dispatch } = useContext(DataContext)
+const Table: React.FC<Tprops> = ({ data, sno, route,sort ,sorttoggle,setSorttoggle }) => {
 
     const router = useRouter()
 
     const editProduct = (id: any) => {
         router.push(`${route}/${id._id}`)
     }
+    const sorting = (e: string) => {
+        sorttoggle ? sort({ [e]: 1 }) : sort({ [e]: -1 })
+    }
 
     return (
         <>
             <table className='styled-table w-100 mx-3'>
                 <thead>
-                    <tr>
+                    <tr style={{cursor:'pointer'}}>
                         <th>S.NO</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
+                        <th onClick={() => { if(setSorttoggle)setSorttoggle(!sorttoggle); sorting('productname') }}>Name <Sorting/></th>
+                        <th onClick={() => { if(setSorttoggle)setSorttoggle(!sorttoggle); sorting('categoryname') }}>Category <Sorting/></th>
+                        <th onClick={() => { if(setSorttoggle)setSorttoggle(!sorttoggle); sorting('price') }}>Price <Sorting/></th>
+                        <th onClick={() => { if(setSorttoggle)setSorttoggle(!sorttoggle); sorting('quantity') }}>Quantity <Sorting/></th>
                         <th>Status</th>
                         <th>Seller</th>
                         <th>Action</th>

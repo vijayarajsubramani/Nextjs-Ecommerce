@@ -24,12 +24,13 @@ const ProductAdmin = () => {
     const [product, setProduct] = useState<string[]>([])
     const [category, setCategory] = useState<string[]>([])
     const [loading, setLoading] = useState<boolean>(false)
+    const [sorttoggle, setSorttoggle] = useState<boolean>(false);
 
 
     const getProducts = async () => {
         try {
             const removeFalsy: any = await removeKey(filterObj)
-            const payload = { page: page, limit: limit, filterObj: removeFalsy, sortObj: sortObj }
+            const payload = { page: page, limit: limit, filterObj: removeFalsy, sortObj: removeKey(sortObj) }
             setLoading(true)
             await request({ url: '/api/product/product', method: 'patch', data: payload }, auth.token).then((res: any) => {
                 if (res.status === 'success') {
@@ -39,9 +40,12 @@ const ProductAdmin = () => {
                 } else {
                     showNotification(false, res.message)
                 }
+            }).catch((error:any)=>{
+                showNotification(false, error?.data?.message)
+
             })
         } catch (error: any) {
-            showNotification(false, error?.data.message)
+            showNotification(false, error?.data?.message)
         }
     }
     const getCategory = async () => {
@@ -82,7 +86,7 @@ const ProductAdmin = () => {
     }, [])
     useEffect(() => {
         getProducts();
-    }, [page, limit, filterObj])
+    }, [page, limit, sortObj,filterObj])
 
     return (
         <>
@@ -112,7 +116,7 @@ const ProductAdmin = () => {
                         <div className="row">
                         </div>
                         {loading ? <Loader /> : <div className="w-100 mx-4">
-                            <Table data={product} sno={sno} route='/admin/product' />
+                            <Table data={product} sno={sno} route='/admin/product' sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle}/>
                             {product.length > 0 && <Pagination page={overallPage} variant='outlined' shape='rounded' pagination={(e: any, data: any) => pagination(e, data)} />}
                         </div>}
                     </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import Select from "../../../component/Dropdown"
+import Loader from "../../../component/Loader"
 import { showNotification } from "../../../component/Toast"
 import request from "../../../service/base.service"
 import BulkImportPopup from "./bulkImportpop"
@@ -9,10 +10,14 @@ const AdminbulkUploadProduct = () => {
     const [selleList, setSellerList] = useState([])
     const [sellerId, setSellerId] = useState('')
     const [error, setError] = useState('')
+    const [loading,setLoading]=useState<boolean>(false)
+
     let inputElement: any = useRef(null);
     const sellNames = () => {
+        setLoading(true)
         request({ url: '/api/user/user', method: 'get', data: {} }).then((res) => {
             if (res.status === 'success') {
+                setLoading(false)
                 setSellerList(res?.data)
             }
         })
@@ -55,7 +60,7 @@ const AdminbulkUploadProduct = () => {
                     <button className='btn btn-info mx-1' onClick={() => setOpenbulkimport(true)}>Download Template</button>
                 </div>
             </div>
-            <div className="row m-2">
+            {loading ? <Loader/> :<div className="row m-2">
                 <div className="col-4">
                     <Select data={selleList} label='Seller list' handlechange={handleChange} />
                     {error && sellerId === '' ? <p className='error'> {error}</p> : ''}
@@ -64,7 +69,7 @@ const AdminbulkUploadProduct = () => {
                     <button className='btn btn-warning' disabled={sellerId ? false : true} onClick={handler}>Upload Products</button>
                     <input type="file" className="hideContent" ref={inputElement} accept=".xlsx" onChange={fileHandler} onClick={(e: any) => { e.target.value === null }} />
                 </div>
-            </div>
+            </div>}
             {openbulkImport && <BulkImportPopup open={openbulkImport} close={() => setOpenbulkimport(false)} />}
         </>
     )

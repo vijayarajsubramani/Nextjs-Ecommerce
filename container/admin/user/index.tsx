@@ -1,11 +1,11 @@
 import Table from "./table"
 import styles from './styles.module.css'
 import request from "../../../service/base.service"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { showNotification } from "../../../component/Toast"
 import Pagination from "../../../component/Pagination"
-import { DataContext } from "../../../context/user"
 import Loader from "../../../component/Loader"
+import { removeKey } from "../../../utils"
 
 
 const AllUser = () => {
@@ -15,11 +15,13 @@ const AllUser = () => {
     const [sno, setSno] = useState<number>(0)
     const [overallPage, setOverallpage] = useState<number>(1)
     const [filterObj, setFilterObj] = useState({ field: 'all', value: '', role: 'SELLER' })
-    const [sortObj, setSortObj] = useState({ createdAt: 1 })
+    const [sortObj, setSortObj] = useState({ createdAt: 1})
     const [isLoader, setisLoader] = useState(false)
+    const [sorttoggle, setSorttoggle] = useState<boolean>(false);
+
 
     const getUsers = async () => {
-        const payload = { page: page, limit: limit, filterObj: filterObj, sortObj: sortObj }
+        const payload = { page: page, limit: limit, filterObj: filterObj, sortObj: removeKey(sortObj) }
         setisLoader(true)
         await request({ url: '/api/user/user', method: 'post', data: payload }).then((res: any) => {
             if (res.status === 'success') {
@@ -42,7 +44,7 @@ const AllUser = () => {
     }
     useEffect(() => {
         getUsers()
-    }, [page, limit, filterObj.value])
+    }, [page, limit,sortObj, filterObj.value])
     return (
         <>
             <div className={styles.registerForm}>
@@ -54,7 +56,7 @@ const AllUser = () => {
                             </div>
                         </div>
                         <div className="w-100 mx-3">
-                            <Table data={data} sno={sno} reload={getUsers}/>
+                            <Table data={data} sno={sno} reload={getUsers} sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle}/>
                             {data.length > 0 && <Pagination page={overallPage} variant='outlined' shape='rounded' pagination={(e: any, data: any) => pagination(e, data)} />}
                         </div>
                     </div>}

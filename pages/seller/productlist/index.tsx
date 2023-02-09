@@ -22,17 +22,19 @@ const ProductDashboard = () => {
     const [page, setPage] = useState<number>(1)
     const [sno, setSno] = useState<number>(0)
     const [limit, setLimit] = useState<number>(10)
+    const [sortObj, setSortObj] = useState({ createdAt: 1})
     const [overallPage, setOverallpage] = useState<number>(1)
     const [filterObj, setFilterObj] = useState({ productname: '', productStatus: '', sellerName: '' })
     const [product, setProduct] = useState<string[]>([])
     const [tab, setTab] = useState<boolean>(false)
+    const [sorttoggle, setSorttoggle] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
 
 
     const getProducts = async () => {
         try {
             const removeFalsy: any = await removeKey(filterObj)
-            const payload = { page: page, limit: limit, sellerId: state?.auth?.user?._id, filterObj: removeFalsy }
+            const payload = { page: page, limit: limit, sellerId: state?.auth?.user?._id, filterObj: removeFalsy,sortObj:sortObj }
             if (payload.sellerId) {
                 setLoading(true)
                 await request({ url: '/api/product/product', method: 'patch', data: payload }).then((res: any) => {
@@ -64,7 +66,7 @@ const ProductDashboard = () => {
 
     useEffect(() => {
         getProducts();
-    }, [state.auth, page, limit, filterObj])
+    }, [state.auth, page, limit,sortObj, filterObj])
     return (
         <>
             <Title title="product" />
@@ -96,7 +98,7 @@ const ProductDashboard = () => {
                                 </div>
                             </div>}
                         {loading ? <Loader /> : <>
-                            {tab ? <ProductTableView sno={0} data={product} route={`/seller/productlist`} pagination={pagination} overallPage={overallPage} /> : <ProductItem data={product} pagination={pagination} overallPage={overallPage} />}
+                            {tab ? <ProductTableView sno={0} data={product} route={`/seller/productlist`} pagination={pagination} overallPage={overallPage} sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle}/> : <ProductItem data={product} pagination={pagination} overallPage={overallPage} />}
                         </>}
                     </div>
                 </div>

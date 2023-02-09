@@ -4,32 +4,43 @@ const ObjectId = require('mongodb').ObjectId;
 
 connectDB();
 
-export const getAllcateName=async(req)=>{
-    try{
+export const getAllcateName = async (req) => {
+    try {
         let aggregatePipeline = [];
         aggregatePipeline.push({ $project: { "_id": 1, "name": 1 } })
         const getData = await Category.aggregate(aggregatePipeline);
-        return { statusCode: 200, status: 'success', message: 'Successfully getall data',data:getData  }
+        return { statusCode: 200, status: 'success', message: 'Successfully getall data', data: getData }
 
-    }catch(error){
+    } catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 
 }
-export const getCategory=async(reqbody)=>{
-    try{
+export const getCategory = async (reqbody) => {
+    try {
         let aggregatePipeline = [];
         const page = reqbody.page || 1;
         const limit = reqbody.limit || 10;
+        let sortObjFinlal = {};
+        let sort_obj = reqbody.sortObj;
+
         const skip = (page - 1) * limit;
         aggregatePipeline.push({ $project: { "_id": 1, "name": 1 } })
+        if (sort_obj) {
+            if (sort_obj.name) {
+                sortObjFinlal = { 'name': sort_obj.name }
+
+            }
+            sortObjFinlal._id = -1;
+            aggregatePipeline.push({ $sort: sortObjFinlal })
+        }
         const totalRecordsCount = await Category.aggregate(aggregatePipeline)
         aggregatePipeline.push({ $skip: skip });
         aggregatePipeline.push({ $limit: limit });
         const getData = await Category.aggregate(aggregatePipeline);
-        return { statusCode: 200, status: 'success', message: 'Successfully getall data',data:getData || [],totalcount: totalRecordsCount.length || 0 }
+        return { statusCode: 200, status: 'success', message: 'Successfully getall data', data: getData || [], totalcount: totalRecordsCount.length || 0 }
 
-    }catch(error){
+    } catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }
@@ -65,7 +76,7 @@ export const updateCategory = async (reqbody) => {
 }
 export const deleteCategory = async (reqbody) => {
     try {
-        const { categoryId} = reqbody;
+        const { categoryId } = reqbody;
         await Category.deleteOne({ _id: ObjectId(categoryId) })
         return { statusCode: 200, status: 'success', message: 'Successfully deleted category ' }
 

@@ -12,6 +12,7 @@ import { imageUpload } from '../../common/imageupload'
 import { useRouter } from "next/router";
 import ProductApproval from "./productApproval";
 import ActionButton from "../../component/Actionbutton";
+import Loader from "../../component/Loader";
 
 const schema = yup.object().shape({
     productname: yup.string().required('Please enter the product name'),
@@ -30,16 +31,19 @@ const Addproduct: React.FC<Tprops> = ({ product, user }) => {
     const router = useRouter()
     const [category, setCategory] = useState<string[]>([])
     const [productImage, setProductimage] = useState<string[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
     const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({
         resolver: yupResolver(schema)
     });
 
     const onsubmitHandler = async (data: any) => {
         try {
+            setLoading(true)
             if (data && product?._id) data.productId = product?._id
             if (data && user?.role.includes('SELLER')) data.sellerId = user?._id
             await imageUpload(productImage).then((res: any) => data.images = res)
             await request({ url: '/api/product/product', method: product?._id ? 'put' : 'post', data: data }).then((res: any) => {
+                setLoading(false)
                 showNotification(true, res.message)
                 user?.role.includes('ADMIN') ? router.push('/admin/product') : router.push('/seller/productlist')
             }).catch((err: any) => {
@@ -88,6 +92,7 @@ const Addproduct: React.FC<Tprops> = ({ product, user }) => {
                     <div className={styles.approve}>
                         <ProductApproval product={product} />
                     </div>
+                    {loading && <Loader />}
                     <form onSubmit={handleSubmit(onsubmitHandler)}>
                         <Input label="Product Name" register={register} name="productname" type="text" error={errors?.productname?.message} className={styles.input} />
                         <Imageuploader limit={2} description='Add Image' tagValue={setProductimage} patchValue={productImage} error={errors?.images?.message} />

@@ -3,6 +3,7 @@ import Select from '../../../component/Dropdown';
 import { useEffect, useState } from 'react';
 import request from '../../../service/base.service';
 import { showNotification } from '../../../component/Toast';
+import Loader from '../../../component/Loader';
 
 
 type Tprops = {
@@ -15,9 +16,15 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
     const [categoryList, setCategoryList] = useState([])
     const [cateId, setCatId] = useState('')
     const [error,setError]=useState('')
+    const [loading,setLoading]=useState<boolean>(false)
+
+
+
     const categoryNames = async() => {
+        setLoading(true)
         await request({ url: '/api/category/category', method: 'get' }).then((res) => {
             if (res.status === 'success') {
+                setLoading(false)
                 setCategoryList(res?.data)
             }
         })
@@ -53,7 +60,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
     }, [])
     return (
         <>
-            <div className={styles.modal} style={open ? { display: "block" } : { display: "none" }}>
+            {loading ? <Loader/> :<div className={styles.modal} style={open ? { display: "block" } : { display: "none" }}>
                 <div className={styles.modalContainer}>
                     <div className='row d-flex'>
                         <div className='col-4'>
@@ -68,7 +75,7 @@ const BulkImportPopup: React.FC<Tprops> = ({ open, close }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>}
         </>
     )
 }

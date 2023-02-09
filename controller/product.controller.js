@@ -5,6 +5,7 @@ import RecentlyView from '../model/recentlyview'
 import UserActivity from '../model/userActivity';
 import Category from '../model/category'
 import FavoriteProduct from '../model/favorite';
+import {bulkProductsSchema} from '../validator/validation'
 const XLSX = require('xlsx');
 const path = require('path');
 const fs = require('fs');
@@ -77,8 +78,21 @@ export const getProductsbySeller = async (reqbody) => {
             aggregationPipeline.push(filter)
         }
         if (sort_obj) {
-            const sort_app = { $sort: sort_obj }
-            aggregationPipeline.push(sort_app)
+            let sortObjFinlal={};
+            if (sort_obj.productname) {
+                sortObjFinlal = { 'productname': sort_obj.productname }
+                
+            } else if (sort_obj.categoryname) {
+                sortObjFinlal = { 'categoryname': sort_obj.categoryname }
+            }
+            else if (sort_obj.price) {
+                sortObjFinlal = { 'price': sort_obj.price }
+            }
+            else if (sort_obj.quantity) {
+                sortObjFinlal = { 'quantity': sort_obj.quantity }
+            }
+            sortObjFinlal._id = -1;
+            aggregationPipeline.push({ $sort: sortObjFinlal })
         }
         const totalProductCount = await Product.aggregate(aggregationPipeline);
         aggregationPipeline.push({ $skip: skip });
@@ -91,6 +105,23 @@ export const getProductsbySeller = async (reqbody) => {
     }
 
 }
+export const updateSellertoProduct=async(reqbody)=>{
+    try{
+        const seller=await User.findOne({_id:ObjectID(reqbody.sellerId)})
+        if(!seller){
+            return { statusCode: 400, status: 'error', message: 'User not Found' }
+        }
+        const product=await Product.findOne({_id:ObjectID(reqbody.productId)})
+        if(!product){
+            return { statusCode: 400, status: 'error', message: 'Product not Found' }
+        }
+        await Product.updateOne({_id:ObjectID(reqbody.productId)},{sellerId:ObjectID(reqbody.sellerId)})
+        return { statusCode: 200, status: 'success', message: 'Seller Name updated successfully' }
+    }catch(error){
+        return { statusCode: 500, status: 'error', message: error.message };
+
+    }
+}
 export const getProductbyAdmin = async (reqbody) => {
     try {
         let filter_obj = reqbody.filterObj;
@@ -98,6 +129,7 @@ export const getProductbyAdmin = async (reqbody) => {
         const page = reqbody.page || 1;
         const limit = reqbody.limit || 10;
         const skip = (page - 1) * limit;
+        let sortObjFinlal = {};
         let aggregatePipeline = [];
 
         aggregatePipeline.push(
@@ -166,8 +198,20 @@ export const getProductbyAdmin = async (reqbody) => {
             aggregatePipeline.push(filter)
         }
         if (sort_obj) {
-            const sort_app = { $sort: sort_obj }
-            aggregatePipeline.push(sort_app)
+            if (sort_obj.productname) {
+                sortObjFinlal = { 'productname': sort_obj.productname }
+
+            } else if (sort_obj.categoryname) {
+                sortObjFinlal = { 'categoryname': sort_obj.categoryname }
+            }
+            else if (sort_obj.price) {
+                sortObjFinlal = { 'price': sort_obj.price }
+            }
+            else if (sort_obj.quantity) {
+                sortObjFinlal = { 'quantity': sort_obj.quantity }
+            }
+            sortObjFinlal._id = -1;
+            aggregatePipeline.push({ $sort: sortObjFinlal })
         }
         const totalProductCount = await Product.aggregate(aggregatePipeline);
         aggregatePipeline.push({ $skip: skip });
@@ -492,7 +536,6 @@ export const getbulkTemplate = async (reqbody) => {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }
-
 export const sellerProductBulkupload = async (body, files) => {
     try {
         const workbook = XLSX.readFile(files.file.filepath);
@@ -575,6 +618,9 @@ export const sellerProductBulkupload = async (body, files) => {
                     }
                     totalproduct.push(products)
                 }
+                const dataString=JSON.stringify(products)
+                const parsedPrdocuts=JSON.parse(dataString);
+                await bulkProductsSchema.validateAsync(parsedPrdocuts)
             }
         }
         await Promise.all(

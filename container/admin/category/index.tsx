@@ -21,7 +21,10 @@ const Category = () => {
     const [limit, setLimit] = useState<number>(5)
     const [sno, setSno] = useState<number>(0)
     const [overallPage, setOverallpage] = useState<number>(1)
+    const [sortObj, setSortObj] = useState({ createdAt: 1 })
     const [loading,setLoading]=useState<boolean>(false)
+    const [sorttoggle, setSorttoggle] = useState<boolean>(false);
+
 
     const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({
         resolver: yupResolver(schema),
@@ -60,7 +63,7 @@ const Category = () => {
     const getCategory = async () => {
         try{
             setLoading(true)
-            await request({ url: '/api/category/category', method: 'patch', data: { page: page, limit: limit } }).then((res: any) => {
+            await request({ url: '/api/category/category', method: 'patch', data: { page: page, limit: limit,sortObj:sortObj } }).then((res: any) => {
                 if (res.status === 'success') {
                     setCategory(res.data)
                     setOverallpage(Math.ceil((res.totalcount / limit)))
@@ -92,7 +95,7 @@ const Category = () => {
     }
     useEffect(() => {
         getCategory()
-    }, [page, limit])
+    }, [page, limit,sortObj])
 
     return (
         <>
@@ -105,7 +108,7 @@ const Category = () => {
                     </form>
                 </div>
                { loading ? <Loader/> :<div className="w-100 mx-3">
-                    <Table data={category} sno={sno} editCategory={editCategory} deleteCategory={deleteCategory} />
+                    <Table data={category} sno={sno} editCategory={editCategory} deleteCategory={deleteCategory} sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle} />
                     {category.length > 0 && <Pagination page={overallPage} variant='outlined' shape='rounded' pagination={(e: any, data: any) => pagination(e, data)} />}
                 </div>}
 

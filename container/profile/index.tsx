@@ -46,6 +46,7 @@ const Profile = () => {
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h4 className="text-right">Profile Settings</h4>
                             </div>
+                            <form  onSubmit={handleSubmit(onsubmitHandler)}>
                             <div className="row mt-2">
                                 <div className="col-12"><label className="labels">Name</label>
                                     <Input register={register} name="name" type="text" error={errors?.name?.message} className={styles.input} />
@@ -61,11 +62,8 @@ const Profile = () => {
                                     <Input register={register} name="email" type="text" error={errors?.email?.message} className={styles.input} />
                                 </div>
                             </div>
-                            <div className="mt-5 text-center">
-                                <form onSubmit={handleSubmit(onsubmitHandler)}>
-                                    <button className="btn btn-primary profile-button" type="submit" disabled>Save Profile</button>
-                                </form>
-                            </div>
+                            <button className="btn btn-primary profile-button mt-5 text-center" type="submit" disabled>Save Profile</button>
+                            </form>
                         </div>
                     </div>
                 </div>
