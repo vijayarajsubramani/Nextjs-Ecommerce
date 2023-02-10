@@ -5,7 +5,7 @@ import RecentlyView from '../model/recentlyview'
 import UserActivity from '../model/userActivity';
 import Category from '../model/category'
 import FavoriteProduct from '../model/favorite';
-import {bulkProductsSchema} from '../validator/validation'
+import { bulkProductsSchema } from '../validator/validation'
 const XLSX = require('xlsx');
 const path = require('path');
 const fs = require('fs');
@@ -78,10 +78,10 @@ export const getProductsbySeller = async (reqbody) => {
             aggregationPipeline.push(filter)
         }
         if (sort_obj) {
-            let sortObjFinlal={};
+            let sortObjFinlal = {};
             if (sort_obj.productname) {
                 sortObjFinlal = { 'productname': sort_obj.productname }
-                
+
             } else if (sort_obj.categoryname) {
                 sortObjFinlal = { 'categoryname': sort_obj.categoryname }
             }
@@ -105,19 +105,24 @@ export const getProductsbySeller = async (reqbody) => {
     }
 
 }
-export const updateSellertoProduct=async(reqbody)=>{
-    try{
-        const seller=await User.findOne({_id:ObjectID(reqbody.sellerId)})
-        if(!seller){
+export const updateSellertoProduct = async (reqbody) => {
+    console.log('reqbody', reqbody.productId)
+    try {
+        const seller = await User.findOne({ _id: ObjectID(reqbody.sellerId) })
+        if (!seller) {
             return { statusCode: 400, status: 'error', message: 'User not Found' }
         }
-        const product=await Product.findOne({_id:ObjectID(reqbody.productId)})
-        if(!product){
-            return { statusCode: 400, status: 'error', message: 'Product not Found' }
+        for (const productId of reqbody.productId) {
+            const product = await Product.findOne({ _id: ObjectID(productId) })
+            if (!product) {
+                return { statusCode: 400, status: 'error', message: 'Product not Found' }
+            }
+            if (product) {
+                await Product.updateOne({ _id: ObjectID(productId) }, { sellerId: ObjectID(reqbody.sellerId) })
+            }
         }
-        await Product.updateOne({_id:ObjectID(reqbody.productId)},{sellerId:ObjectID(reqbody.sellerId)})
         return { statusCode: 200, status: 'success', message: 'Seller Name updated successfully' }
-    }catch(error){
+    } catch (error) {
         return { statusCode: 500, status: 'error', message: error.message };
 
     }
@@ -556,6 +561,7 @@ export const sellerProductBulkupload = async (body, files) => {
             negativeFieldname.push(name)
         }
         let column = ['categoryname', 'productname', 'description', 'images', 'price', 'quantity']
+        console.log("product_Lists",product_Lists)
         for (let i = 0; i < product_Lists.length - 1; i++) {
             if (product_Lists[i][0] !== '') {
                 let k = 0;
@@ -618,8 +624,8 @@ export const sellerProductBulkupload = async (body, files) => {
                     }
                     totalproduct.push(products)
                 }
-                const dataString=JSON.stringify(products)
-                const parsedPrdocuts=JSON.parse(dataString);
+                const dataString = JSON.stringify(products)
+                const parsedPrdocuts = JSON.parse(dataString);
                 await bulkProductsSchema.validateAsync(parsedPrdocuts)
             }
         }

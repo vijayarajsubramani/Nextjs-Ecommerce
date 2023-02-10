@@ -16,7 +16,7 @@ const Header = () => {
             <header className={`${styles.header} container-fluid`}>
                 <div className="row">
                     <div className="col">
-                        <h3 className="py-2" onClick={() => router.push('/')}>UNIPICK</h3>
+                        <h4 className="py-2" onClick={() => router.push('/')}>UNIPICK-NEW</h4>
                     </div>
                     <div className="col d-flex flex-row-reverse" >
                         {!state?.auth?.user?.role ? <div className="p-2"><LoginIcon onClick={() => router.push('/login')} /></div> :

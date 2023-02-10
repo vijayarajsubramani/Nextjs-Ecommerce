@@ -48,18 +48,17 @@ const AllUser = () => {
     return (
         <>
             <div className={styles.registerForm}>
-                {isLoader ? <Loader/> :
                     <div className="w-100">
                         <div className="row">
-                            <div className="col-6 mx-5">
+                            <div className="col-4 mx-5">
                             <input type='text' placeholder="search" value={filterObj.value} onChange={(e: any) => setFilterObj({ ...filterObj, value: e.target.value })}  className={styles.input}/>
                             </div>
                         </div>
-                        <div className="w-100 mx-3">
+                        {isLoader ? <Loader/> :<div className="w-100 mx-3">
                             <Table data={data} sno={sno} reload={getUsers} sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle}/>
                             {data.length > 0 && <Pagination page={overallPage} variant='outlined' shape='rounded' pagination={(e: any, data: any) => pagination(e, data)} />}
-                        </div>
-                    </div>}
+                        </div>}
+                    </div>
             </div>
         </>
     )

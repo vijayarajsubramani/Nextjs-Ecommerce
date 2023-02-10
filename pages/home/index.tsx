@@ -11,7 +11,7 @@ import { removeKey } from '../../utils';
 const HomePage = () => {
     const [searchValue, setsearchvalue] = useState<string>('')
     const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(10)
+    const [limit, setLimit] = useState<number>(5)
     const [filterObj, setFilterObj] = useState({ productname: '', categoryName: '', productStatus: '', sellerName: '', minPrice: '', maxPrice: '' })
     const [sortObj, setSortObj] = useState('createdAt-DESC')
     const [overallPage, setOverallpage] = useState<number>(1)
@@ -36,15 +36,21 @@ const HomePage = () => {
             showNotification(false, error?.data.message)
         }
     }
+    const handleLoadmore = () => setPage(page + 1)
     useEffect(() => {
         getProducts();
-    }, [page, limit, filterObj,searchValue,sortObj])
+    }, [page, limit, filterObj, searchValue, sortObj])
 
     return (
         <>
-            <Title title="Unipick"/>
-            <ProductFilter setsearchvalue={setsearchvalue} setSortObj={setSortObj} setFilterObj={setFilterObj}/>
-            {loading ? <Loader/> :<ProductTile productImage={product} reload={getProducts}/>}
+            <Title title="Unipick" />
+            <ProductFilter setsearchvalue={setsearchvalue} setSortObj={setSortObj} setFilterObj={setFilterObj} />
+            {loading ? <Loader /> : <ProductTile productImage={product} reload={getProducts} />}
+            {product.length < page * 5 ? "" :
+                <div className='fixed-bottom d-flex justify-content-center'>
+                    <button className="btn btn-info my-2" onClick={handleLoadmore}>Load More</button>
+                </div>
+            }
         </>
     )
 }

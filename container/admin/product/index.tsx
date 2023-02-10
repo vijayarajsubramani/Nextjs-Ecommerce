@@ -116,7 +116,7 @@ const ProductAdmin = () => {
                         <div className="row">
                         </div>
                         {loading ? <Loader /> : <div className="w-100 mx-4">
-                            <Table data={product} sno={sno} route='/admin/product' sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle}/>
+                            <Table data={product} sno={sno} route='/admin/product' sort={setSortObj} setSorttoggle={setSorttoggle} sorttoggle={sorttoggle} reload={getProducts}/>
                             {product.length > 0 && <Pagination page={overallPage} variant='outlined' shape='rounded' pagination={(e: any, data: any) => pagination(e, data)} />}
                         </div>}
                     </div>

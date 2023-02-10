@@ -38,7 +38,7 @@ const ProductDetail: React.FC<Tprops> = ({ product, reload }) => {
                             </IconButton>}
                         </div>
                         <div className="row">
-                            <Image src={toggleImage ?? images?.[0]} alt='imgae upload' width='500' height='300' loading="lazy" onClick={() => changeImage(images?.[0])} />
+                            <Image src={(toggleImage ?? images?.[0]) || dummy} alt='imgae upload' width='500' height='300' loading="lazy" onClick={() => changeImage(images?.[0])} />
                         </div>
                         <div className="row">
                             <Image src={images?.[1] ?? dummy} alt='imgae upload' width='120' height='120' loading="lazy" onClick={() => changeImage(images?.[1])} />

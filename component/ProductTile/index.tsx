@@ -33,7 +33,7 @@ const ProductTitle: React.FC<Tprops> = ({ productImage, label ,reload}) => {
                             </div>
                             <CardContent >
                                 <div className='row border d-flex justify-content-center' onClick={() => router.push(`/seller/productdetail/${router.pathname === '/confirmorder/[addressid]' ? item?.productDetails?._id : item._id}`)}>
-                                    <Image src={(item?.images?.[0] ?? item?.productDetails?.images[0]) ?? dummy} alt='imgae upload' width='175' height='175' loading="lazy" />
+                                    <Image src={(item?.images?.[0] ?? item?.productDetails?.images[0]) || dummy} alt='imgae upload' width='175' height='175' loading="lazy" />
                                 </div>
                                 <div className='d-flex justify-content-between m-1' >
                                     <div >

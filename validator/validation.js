@@ -192,7 +192,7 @@ module.exports.bulkProductsSchema=joi.object({
 })
 module.exports.updateSellerIdToProductSchema = joi.object({
     sellerId: joiObjectId().required(),
-    productId: joiObjectId().required(),
+    productId: joi.array().items(joiObjectId().required()),
 });
 
 //cart

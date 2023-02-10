@@ -42,7 +42,7 @@ const ProductFilter: React.FC<Tprops> = ({ setsearchvalue, setSortObj, setFilter
                         <option value=''>Choose Category</option>
                         {categoryList?.length ? categoryList?.map((item: any, index) => {
                             return (
-                                <option key={index} value={item._id}>{item.name}</option>
+                                <option key={index} value={item.name}>{item.name}</option>
                             )
                         }) : <option></option>}
                     </select>
