@@ -541,6 +541,13 @@ export const getbulkTemplate = async (reqbody) => {
         return { statusCode: 500, status: 'error', message: error.message };
     }
 }
+export const getupdatebulkTemplate=async()=>{
+    try{
+        
+    }catch(error){
+        return { statusCode: 500, status: 'error', message: error.message };
+    }
+}
 export const sellerProductBulkupload = async (body, files) => {
     try {
         const workbook = XLSX.readFile(files.file.filepath);
